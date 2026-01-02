@@ -180,7 +180,7 @@ const App = () => {
       `}
       >
         <div className="h-14 flex items-center px-4 border-b border-gray-100 flex-shrink-0">
-          <img src="/popup_logo.svg" alt="观数" className="h-8 mr-2" />
+          <img src={`${import.meta.env.BASE_URL}popup_logo.svg`} alt="观数" className="h-8 mr-2" />
           <span className="font-bold text-lg text-gray-900">组件库</span>
         </div>
 
