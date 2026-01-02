@@ -11,13 +11,16 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
-    }
+    },
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "outDir": "dist",
+    "declarationDir": "dist"
   },
-  "include": ["src", "showcase"],
-  "exclude": ["node_modules", "dist", "dist-showcase"]
+  "include": ["src"],
+  "exclude": ["node_modules", "dist", "dist-showcase", "src/**/demo/**", "showcase"]
 }

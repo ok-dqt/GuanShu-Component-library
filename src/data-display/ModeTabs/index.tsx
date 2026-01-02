@@ -38,5 +38,13 @@ export const ModeTabs: React.FC<ModeTabsProps> = ({ value, options, onChange, si
     ),
   }));
 
-  return <Segmented value={value} options={segmentedOptions} onChange={onChange} size={size} style={style} />;
+  return (
+    <Segmented
+      value={value}
+      options={segmentedOptions}
+      onChange={(val) => onChange(val as string)}
+      size={size}
+      style={style}
+    />
+  );
 };
