@@ -75,6 +75,8 @@ export interface DataTableProps<T = any> {
   className?: string;
   /** 水平滚动宽度 */
   scrollX?: number | string | true;
+  /** 是否显示边框 */
+  bordered?: boolean;
 }
 
 /**
@@ -108,6 +110,7 @@ export const DataTable = <T extends object = any>({
   style,
   className,
   scrollX,
+  bordered = false,
 }: DataTableProps<T>) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -220,6 +223,7 @@ export const DataTable = <T extends object = any>({
         scroll={getScrollConfig()}
         onScroll={loadMode === 'scroll' ? handleScroll : undefined}
         footer={loadMode === 'scroll' ? renderScrollFooter : undefined}
+        bordered={bordered}
       />
     </div>
   );

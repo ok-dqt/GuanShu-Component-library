@@ -365,24 +365,50 @@ const ProgressStatusPanelDemo = () => (
   />
 );
 
-// 生成表格 Mock 数据
-const generateTableMockData = (count: number) => {
+// 示例图片和视频 URL
+const sampleImages = [
+  'https://gw.alicdn.com/imgextra/i4/2215736624755/O1CN01z50yBJ1JOGH6VQOSQ_!!2215736624755-0-cib.jpg',
+  'https://gw.alicdn.com/imgextra/i3/2215736624755/O1CN01TJ4mDo1JOGGwxUCUn_!!2215736624755-0-cib.jpg',
+  'https://gw.alicdn.com/imgextra/i2/2215736624755/O1CN01hxYLCf1JOGGxQYJcM_!!2215736624755-0-cib.jpg',
+];
+
+const sampleVideos = [
+  'https://cloud.video.taobao.com/play/u/2215736624755/p/1/e/6/t/1/430924456482.mp4',
+];
+
+// 生成带图片/视频的表格 Mock 数据
+const generateTableMockData = (count: number, startIndex: number = 0) => {
   return Array.from({ length: count }, (_, index) => ({
-    key: index + 1,
-    productName: `商品${index + 1}`,
+    key: startIndex + index + 1,
+    productName: `商品${startIndex + index + 1}`,
+    image: sampleImages[index % sampleImages.length],
+    video: index % 3 === 0 ? sampleVideos[0] : null,
     sales: Math.floor(Math.random() * 10000),
     revenue: Math.floor(Math.random() * 100000),
     status: Math.random() > 0.5 ? 'active' : 'inactive',
   }));
 };
 
-const tableColumns: DataTableColumn[] = [
-  { title: '商品名称', dataIndex: 'productName', width: 200, minWidth: 150 },
+// 基础列配置（固定列宽）
+const fixedWidthColumns: DataTableColumn[] = [
+  {
+    title: '商品图片',
+    dataIndex: 'image',
+    width: 80,
+    align: 'center',
+    render: (url) => (
+      <img
+        src={url}
+        alt="商品"
+        style={{ width: 48, height: 48, objectFit: 'cover', borderRadius: 4 }}
+      />
+    ),
+  },
+  { title: '商品名称', dataIndex: 'productName', width: 150 },
   {
     title: '销量',
     dataIndex: 'sales',
-    width: 120,
-    minWidth: 100,
+    width: 100,
     sorter: true,
     align: 'right',
     render: (text) => text.toLocaleString(),
@@ -390,8 +416,7 @@ const tableColumns: DataTableColumn[] = [
   {
     title: '销售额',
     dataIndex: 'revenue',
-    width: 150,
-    minWidth: 120,
+    width: 120,
     sorter: true,
     align: 'right',
     render: (text) => `¥${text.toLocaleString()}`,
@@ -399,8 +424,7 @@ const tableColumns: DataTableColumn[] = [
   {
     title: '状态',
     dataIndex: 'status',
-    width: 100,
-    minWidth: 80,
+    width: 80,
     align: 'center',
     render: (text) =>
       text === 'active' ? (
@@ -411,20 +435,227 @@ const tableColumns: DataTableColumn[] = [
   },
 ];
 
-const DataTableDemo = () => (
-  <DataTable
-    columns={tableColumns}
-    dataSource={generateTableMockData(10)}
-    columnLayout="auto"
-    loadMode="pagination"
-    heightMode="fixed"
-    height={300}
-    pagination={{
-      pageSize: 5,
-      showTotal: (total) => `共 ${total} 条`,
-    }}
-  />
-);
+// 自动列宽配置（flex 布局）
+const flexWidthColumns: DataTableColumn[] = [
+  {
+    title: '商品图片',
+    dataIndex: 'image',
+    minWidth: 80,
+    align: 'center',
+    render: (url) => (
+      <img
+        src={url}
+        alt="商品"
+        style={{ width: 48, height: 48, objectFit: 'cover', borderRadius: 4 }}
+      />
+    ),
+  },
+  { title: '商品名称', dataIndex: 'productName', minWidth: 120 },
+  {
+    title: '销量',
+    dataIndex: 'sales',
+    minWidth: 80,
+    sorter: true,
+    align: 'right',
+    render: (text) => text.toLocaleString(),
+  },
+  {
+    title: '销售额',
+    dataIndex: 'revenue',
+    minWidth: 100,
+    sorter: true,
+    align: 'right',
+    render: (text) => `¥${text.toLocaleString()}`,
+  },
+  {
+    title: '状态',
+    dataIndex: 'status',
+    minWidth: 70,
+    align: 'center',
+    render: (text) =>
+      text === 'active' ? (
+        <Tag color="green">在售</Tag>
+      ) : (
+        <Tag color="red">下架</Tag>
+      ),
+  },
+];
+
+// 带视频预览的列配置
+const mediaColumns: DataTableColumn[] = [
+  {
+    title: '媒体',
+    dataIndex: 'image',
+    width: 100,
+    align: 'center',
+    render: (url, record: any) => (
+      <MediaPreview
+        media={[
+          { type: 'image', url, title: record.productName },
+          ...(record.video ? [{ type: 'video' as const, url: record.video, title: '商品视频' }] : []),
+        ]}
+        maxDisplay={2}
+      />
+    ),
+  },
+  { title: '商品名称', dataIndex: 'productName', width: 150 },
+  {
+    title: '销量',
+    dataIndex: 'sales',
+    width: 100,
+    sorter: true,
+    align: 'right',
+    render: (text) => text.toLocaleString(),
+  },
+  {
+    title: '销售额',
+    dataIndex: 'revenue',
+    width: 120,
+    sorter: true,
+    align: 'right',
+    render: (text) => `¥${text.toLocaleString()}`,
+  },
+  {
+    title: '状态',
+    dataIndex: 'status',
+    width: 80,
+    align: 'center',
+    render: (text) =>
+      text === 'active' ? (
+        <Tag color="green">在售</Tag>
+      ) : (
+        <Tag color="red">下架</Tag>
+      ),
+  },
+];
+
+const DataTableDemo = () => {
+  const [activeTab, setActiveTab] = React.useState<'pagination' | 'scroll' | 'flex' | 'media'>('pagination');
+  const [scrollData, setScrollData] = React.useState(() => generateTableMockData(10));
+  const [scrollLoading, setScrollLoading] = React.useState(false);
+  const [hasMore, setHasMore] = React.useState(true);
+
+  const handleLoadMore = React.useCallback(() => {
+    setScrollLoading(true);
+    setTimeout(() => {
+      const newData = generateTableMockData(5, scrollData.length);
+      setScrollData((prev) => [...prev, ...newData]);
+      setScrollLoading(false);
+      if (scrollData.length + 5 >= 30) {
+        setHasMore(false);
+      }
+    }, 800);
+  }, [scrollData.length]);
+
+  const tabs = [
+    { key: 'pagination', label: '分页模式' },
+    { key: 'scroll', label: '无限滚动' },
+    { key: 'flex', label: '自动列宽' },
+    { key: 'media', label: '图片/视频' },
+  ];
+
+  return (
+    <div className="space-y-4">
+      {/* 标签切换 */}
+      <div className="flex gap-2 border-b border-gray-200 pb-3">
+        {tabs.map((tab) => (
+          <button
+            key={tab.key}
+            onClick={() => setActiveTab(tab.key as any)}
+            className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+              activeTab === tab.key
+                ? 'bg-accent-600 text-white'
+                : 'text-gray-600 hover:bg-gray-100'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {/* 分页模式 - 固定列宽 + 边框 */}
+      {activeTab === 'pagination' && (
+        <div>
+          <p className="text-sm text-gray-500 mb-3">
+            <code className="text-accent-600">loadMode="pagination"</code> +{' '}
+            <code className="text-accent-600">columnLayout="auto"</code> +{' '}
+            <code className="text-accent-600">bordered</code>
+          </p>
+          <DataTable
+            columns={fixedWidthColumns}
+            dataSource={generateTableMockData(20)}
+            columnLayout="auto"
+            loadMode="pagination"
+            heightMode="fixed"
+            height={320}
+            bordered
+            pagination={{
+              pageSize: 5,
+              showSizeChanger: true,
+              showTotal: (total) => `共 ${total} 条`,
+            }}
+          />
+        </div>
+      )}
+
+      {/* 无限滚动模式 */}
+      {activeTab === 'scroll' && (
+        <div>
+          <p className="text-sm text-gray-500 mb-3">
+            <code className="text-accent-600">loadMode="scroll"</code> - 滚动到底部自动加载更多
+          </p>
+          <DataTable
+            columns={fixedWidthColumns}
+            dataSource={scrollData}
+            loadMode="scroll"
+            heightMode="fixed"
+            height={320}
+            bordered
+            hasMore={hasMore}
+            onLoadMore={handleLoadMore}
+            loading={scrollLoading}
+          />
+        </div>
+      )}
+
+      {/* 自动列宽（Flex） */}
+      {activeTab === 'flex' && (
+        <div>
+          <p className="text-sm text-gray-500 mb-3">
+            <code className="text-accent-600">columnLayout="flex"</code> - 列宽自动平均分配
+          </p>
+          <DataTable
+            columns={flexWidthColumns}
+            dataSource={generateTableMockData(8)}
+            columnLayout="flex"
+            loadMode="pagination"
+            bordered
+            pagination={false}
+          />
+        </div>
+      )}
+
+      {/* 图片/视频预览 */}
+      {activeTab === 'media' && (
+        <div>
+          <p className="text-sm text-gray-500 mb-3">
+            结合 <code className="text-accent-600">MediaPreview</code> 组件展示图片和视频
+          </p>
+          <DataTable
+            columns={mediaColumns}
+            dataSource={generateTableMockData(6)}
+            columnLayout="auto"
+            loadMode="pagination"
+            heightMode="fixed"
+            height={320}
+            bordered
+            pagination={false}
+          />
+        </div>
+      )}
+    </div>
+  );
+};
 
 // 组件注册表
 export const COMPONENT_REGISTRY: ComponentInfo[] = [
@@ -1098,6 +1329,7 @@ setProgress({ stage: 'downloading', current: 0, total: 100 });
       { name: 'onChange', description: '表格变化回调', type: 'TableProps.onChange', default: '-' },
       { name: 'rowSelection', description: '行选择配置', type: 'TableProps.rowSelection', default: '-' },
       { name: 'scrollX', description: '水平滚动宽度', type: "number | string | true", default: '-' },
+      { name: 'bordered', description: '是否显示边框', type: 'boolean', default: 'false' },
     ],
     codeSnippet: `import { DataTable } from 'guanshu-component-library';
 import type { DataTableColumn } from 'guanshu-component-library';
@@ -1121,13 +1353,14 @@ const columns: DataTableColumn[] = [
   },
 ];
 
-// 分页加载
+// 分页加载 + 边框
 <DataTable
   columns={columns}
   dataSource={data}
   loadMode="pagination"
   heightMode="fixed"
   height={300}
+  bordered
 />
 
 // 无限滚动
@@ -1137,8 +1370,17 @@ const columns: DataTableColumn[] = [
   loadMode="scroll"
   heightMode="fixed"
   height={300}
+  bordered
   hasMore={hasMore}
   onLoadMore={handleLoadMore}
+/>
+
+// 自动列宽（flex）
+<DataTable
+  columns={columns}
+  dataSource={data}
+  columnLayout="flex"
+  bordered
 />`,
   },
 ];
