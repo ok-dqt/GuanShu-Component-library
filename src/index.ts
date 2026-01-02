@@ -18,3 +18,6 @@ export * from './business';
 
 // 主题配置
 export * from './theme';
+
+// 品牌资源
+export * from './brand';

@@ -9,12 +9,13 @@ import {
   FontSizeOutlined,
   ColumnWidthOutlined,
   GithubOutlined,
+  PictureOutlined,
 } from '@ant-design/icons';
 import { COMPONENT_REGISTRY } from './registry';
 import { ComponentCategory } from './types';
-import { GettingStarted, DesignColors, DesignTypography, DesignSpacing } from './pages';
+import { GettingStarted, DesignColors, DesignTypography, DesignSpacing, DesignLogo } from './pages';
 
-type PageType = 'getting-started' | 'colors' | 'typography' | 'spacing' | 'component';
+type PageType = 'getting-started' | 'colors' | 'typography' | 'spacing' | 'logo' | 'component';
 
 interface NavItem {
   id: string;
@@ -45,6 +46,7 @@ const App = () => {
     {
       title: '设计规范',
       items: [
+        { id: 'logo', name: 'Logo', icon: <PictureOutlined />, type: 'logo' },
         { id: 'colors', name: '颜色', icon: <BgColorsOutlined />, type: 'colors' },
         { id: 'typography', name: '字体', icon: <FontSizeOutlined />, type: 'typography' },
         { id: 'spacing', name: '间距', icon: <ColumnWidthOutlined />, type: 'spacing' },
@@ -87,6 +89,8 @@ const App = () => {
         return <DesignTypography />;
       case 'spacing':
         return <DesignSpacing />;
+      case 'logo':
+        return <DesignLogo />;
       case 'component':
         if (!selectedComponent) return null;
         return (
