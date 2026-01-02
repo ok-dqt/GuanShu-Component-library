@@ -2,7 +2,7 @@ import React from 'react';
 import { Button as AntButton } from 'antd';
 import type { ButtonProps as AntButtonProps } from 'antd';
 
-export interface ButtonProps extends AntButtonProps {
+export interface ButtonProps extends Omit<AntButtonProps, 'variant'> {
   /** 按钮变体 */
   variant?: 'solid' | 'outline' | 'ghost' | 'link';
 }
