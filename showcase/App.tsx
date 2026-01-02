@@ -10,6 +10,7 @@ import {
   PictureOutlined,
   CopyOutlined,
   CheckOutlined,
+  RobotOutlined,
 } from '@ant-design/icons';
 import { COMPONENT_REGISTRY } from './registry';
 import { ComponentCategory } from './types';
@@ -32,7 +33,7 @@ interface NavGroup {
 
 const App = () => {
   const [selectedNavId, setSelectedNavId] = useState<string>('getting-started');
-  const [activeTab, setActiveTab] = useState<'preview' | 'code'>('preview');
+  const [activeTab, setActiveTab] = useState<'preview' | 'code' | 'ai'>('preview');
   const [copied, setCopied] = useState(false);
 
   // 复制代码
@@ -138,6 +139,21 @@ const App = () => {
                     <CodeOutlined style={{ fontSize: '14px' }} />
                     代码
                   </button>
+                  {selectedComponent.aiGuidance && (
+                    <button
+                      onClick={() => setActiveTab('ai')}
+                      className={`
+                        px-4 py-2 rounded-md flex items-center gap-2 text-sm font-medium transition-all
+                        ${activeTab === 'ai'
+                          ? 'bg-accent-600 text-white shadow-sm'
+                          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                        }
+                      `}
+                    >
+                      <RobotOutlined style={{ fontSize: '14px' }} />
+                      AI 指南
+                    </button>
+                  )}
                 </div>
 
                 {activeTab === 'code' && (
@@ -157,19 +173,133 @@ const App = () => {
 
               {/* Content Area */}
               <div className="min-h-[320px]">
-                {activeTab === 'preview' ? (
+                {activeTab === 'preview' && (
                   <div className="preview-grid p-8 flex items-center justify-center min-h-[320px]">
                     <div className="w-full flex justify-center">
                       <selectedComponent.component />
                     </div>
                   </div>
-                ) : (
+                )}
+                {activeTab === 'code' && (
                   <div className="code-block p-6 overflow-auto max-h-[500px]">
                     <pre className="text-sm leading-relaxed">
                       <code className="font-mono text-gray-300">
                         {selectedComponent.codeSnippet}
                       </code>
                     </pre>
+                  </div>
+                )}
+                {activeTab === 'ai' && selectedComponent.aiGuidance && (
+                  <div className="p-6 space-y-6 overflow-auto max-h-[600px]">
+                    {/* 适用场景 */}
+                    <div>
+                      <h3 className="text-sm font-semibold text-green-700 mb-3 flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-green-500" />
+                        适用场景
+                      </h3>
+                      <ul className="space-y-2">
+                        {selectedComponent.aiGuidance.whenToUse.map((item, idx) => (
+                          <li key={idx} className="text-sm text-gray-700 flex items-start gap-2">
+                            <span className="text-green-500 mt-1">✓</span>
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* 不适用场景 */}
+                    {selectedComponent.aiGuidance.whenNotToUse && (
+                      <div>
+                        <h3 className="text-sm font-semibold text-red-700 mb-3 flex items-center gap-2">
+                          <span className="w-2 h-2 rounded-full bg-red-500" />
+                          不适用场景
+                        </h3>
+                        <ul className="space-y-2">
+                          {selectedComponent.aiGuidance.whenNotToUse.map((item, idx) => (
+                            <li key={idx} className="text-sm text-gray-700 flex items-start gap-2">
+                              <span className="text-red-500 mt-1">✗</span>
+                              {item}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {/* 关键约束 */}
+                    {selectedComponent.aiGuidance.constraints && (
+                      <div>
+                        <h3 className="text-sm font-semibold text-amber-700 mb-3 flex items-center gap-2">
+                          <span className="w-2 h-2 rounded-full bg-amber-500" />
+                          关键约束
+                        </h3>
+                        <ul className="space-y-2">
+                          {selectedComponent.aiGuidance.constraints.map((item, idx) => (
+                            <li key={idx} className="text-sm text-gray-700 flex items-start gap-2">
+                              <span className="text-amber-500 mt-1">!</span>
+                              <code className="text-xs bg-amber-50 text-amber-800 px-1 py-0.5 rounded">
+                                {item}
+                              </code>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {/* 组合建议 */}
+                    {selectedComponent.aiGuidance.compositionWith && (
+                      <div>
+                        <h3 className="text-sm font-semibold text-blue-700 mb-3 flex items-center gap-2">
+                          <span className="w-2 h-2 rounded-full bg-blue-500" />
+                          组合建议
+                        </h3>
+                        <div className="flex flex-wrap gap-2">
+                          {selectedComponent.aiGuidance.compositionWith.map((item, idx) => (
+                            <span
+                              key={idx}
+                              className="text-xs bg-blue-50 text-blue-700 px-3 py-1.5 rounded-full border border-blue-200"
+                            >
+                              {item}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* 常见错误 */}
+                    {selectedComponent.aiGuidance.commonMistakes && (
+                      <div>
+                        <h3 className="text-sm font-semibold text-orange-700 mb-3 flex items-center gap-2">
+                          <span className="w-2 h-2 rounded-full bg-orange-500" />
+                          常见错误
+                        </h3>
+                        <ul className="space-y-2">
+                          {selectedComponent.aiGuidance.commonMistakes.map((item, idx) => (
+                            <li key={idx} className="text-sm text-gray-700 flex items-start gap-2">
+                              <span className="text-orange-500 mt-1">⚠</span>
+                              {item}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {/* 性能提示 */}
+                    {selectedComponent.aiGuidance.performanceTips && (
+                      <div>
+                        <h3 className="text-sm font-semibold text-purple-700 mb-3 flex items-center gap-2">
+                          <span className="w-2 h-2 rounded-full bg-purple-500" />
+                          性能提示
+                        </h3>
+                        <ul className="space-y-2">
+                          {selectedComponent.aiGuidance.performanceTips.map((item, idx) => (
+                            <li key={idx} className="text-sm text-gray-700 flex items-start gap-2">
+                              <span className="text-purple-500 mt-1">⚡</span>
+                              {item}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

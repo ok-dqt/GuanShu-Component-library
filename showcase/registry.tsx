@@ -1382,5 +1382,49 @@ const columns: DataTableColumn[] = [
   columnLayout="flex"
   bordered
 />`,
+    aiGuidance: {
+      whenToUse: [
+        '需要展示结构化列表数据，且数据量超过 5 条时',
+        '需要排序、筛选、分页等表格交互功能时',
+        '数据量较大（100+ 条）需要无限滚动加载时',
+        '表格需要展示图片、视频等媒体内容时',
+        '需要用户选择多行数据进行批量操作时',
+      ],
+      whenNotToUse: [
+        '简单的键值对展示 → 使用 DataItem 或 Descriptions',
+        '只有 2-3 行数据 → 直接使用原生 HTML table',
+        '卡片式布局展示 → 使用 CardGrid',
+        '只需要展示单个统计数值 → 使用 StatisticCard',
+        '展示状态列表无需表格 → 使用 List 组件',
+      ],
+      constraints: [
+        'columns 数组中每项必须包含 title 和 dataIndex',
+        'dataSource 中每条数据必须有唯一的 key 字段，或通过 rowKey 指定',
+        'loadMode="scroll" 时必须同时提供 hasMore 和 onLoadMore',
+        'heightMode="fixed" 时必须提供 height 值',
+        'columnLayout="auto" 时使用 width，columnLayout="flex" 时使用 minWidth',
+      ],
+      compositionWith: [
+        'MediaPreview - 在表格单元格中展示图片/视频预览',
+        'StatusTag - 渲染状态列，展示不同状态标签',
+        'FilterBar - 放在表格上方，提供筛选功能',
+        'TableDataSummary - 展示已选数量和总数统计',
+        'ExportButton - 表格数据导出功能',
+        'PaginationFooter - 自定义分页底栏（如需显示缓存状态）',
+      ],
+      commonMistakes: [
+        '忘记设置 height 导致 heightMode="fixed" 时表格高度为 0',
+        'columnLayout="flex" 时错误使用 width 而非 minWidth，导致列宽不生效',
+        'loadMode="scroll" 但未处理 loading 状态，导致重复触发加载',
+        '大数据量时未使用虚拟滚动，导致页面卡顿（建议 500+ 条时考虑分页）',
+        'render 函数中直接修改原数据，应返回新的 ReactNode',
+      ],
+      performanceTips: [
+        '数据量超过 100 条时，优先使用 loadMode="pagination" 分页加载',
+        '无限滚动时，每次加载 10-20 条为宜，避免一次性加载过多',
+        '复杂的 render 函数应使用 React.memo 或 useMemo 优化',
+        '频繁更新的数据源，确保正确设置 rowKey 避免不必要的重渲染',
+      ],
+    },
   },
 ];
