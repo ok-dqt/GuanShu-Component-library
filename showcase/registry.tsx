@@ -39,6 +39,11 @@ import { AutoLoadControl } from '../src/feedback/AutoLoadControl';
 import { ExportProgressOverlay } from '../src/feedback/ExportProgressOverlay';
 import { ProgressStatusPanel } from '../src/feedback/ProgressStatusPanel';
 
+// 导入业务组件
+import { DataTable } from '../src/business/DataTable';
+import type { DataTableColumn } from '../src/business/DataTable';
+import { Tag } from 'antd';
+
 // Demo 组件
 const StatisticCardDemo = () => (
   <StatisticCard
@@ -357,6 +362,67 @@ const ProgressStatusPanelDemo = () => (
       { key: '4', label: '生成报告', loading: false, completed: false },
       { key: '5', label: '完成导出', loading: false, completed: false },
     ]}
+  />
+);
+
+// 生成表格 Mock 数据
+const generateTableMockData = (count: number) => {
+  return Array.from({ length: count }, (_, index) => ({
+    key: index + 1,
+    productName: `商品${index + 1}`,
+    sales: Math.floor(Math.random() * 10000),
+    revenue: Math.floor(Math.random() * 100000),
+    status: Math.random() > 0.5 ? 'active' : 'inactive',
+  }));
+};
+
+const tableColumns: DataTableColumn[] = [
+  { title: '商品名称', dataIndex: 'productName', width: 200, minWidth: 150 },
+  {
+    title: '销量',
+    dataIndex: 'sales',
+    width: 120,
+    minWidth: 100,
+    sorter: true,
+    align: 'right',
+    render: (text) => text.toLocaleString(),
+  },
+  {
+    title: '销售额',
+    dataIndex: 'revenue',
+    width: 150,
+    minWidth: 120,
+    sorter: true,
+    align: 'right',
+    render: (text) => `¥${text.toLocaleString()}`,
+  },
+  {
+    title: '状态',
+    dataIndex: 'status',
+    width: 100,
+    minWidth: 80,
+    align: 'center',
+    render: (text) =>
+      text === 'active' ? (
+        <Tag color="green">在售</Tag>
+      ) : (
+        <Tag color="red">下架</Tag>
+      ),
+  },
+];
+
+const DataTableDemo = () => (
+  <DataTable
+    columns={tableColumns}
+    dataSource={generateTableMockData(10)}
+    columnLayout="auto"
+    loadMode="pagination"
+    heightMode="fixed"
+    height={300}
+    pagination={{
+      pageSize: 5,
+      showTotal: (total) => `共 ${total} 条`,
+    }}
   />
 );
 
@@ -1006,6 +1072,73 @@ setProgress({ stage: 'downloading', current: 0, total: 100 });
     { key: '2', label: '处理数据', loading: true, completed: false },
     { key: '3', label: '生成报告', loading: false, completed: false },
   ]}
+/>`,
+  },
+  // 业务组件
+  {
+    id: 'data-table',
+    name: 'DataTable',
+    cnName: '数据表格',
+    category: ComponentCategory.BUSINESS,
+    description: '通用数据表格组件，支持排序、分页/无限滚动、自适应高度等功能。',
+    component: DataTableDemo,
+    propsDefinition: [
+      { name: 'columns', description: '列配置', type: 'DataTableColumn[]', default: '-' },
+      { name: 'dataSource', description: '数据源', type: 'T[]', default: '-' },
+      { name: 'rowKey', description: '行唯一标识', type: "string | ((record: T) => string)", default: "'key'" },
+      { name: 'columnLayout', description: '列布局模式', type: "'auto' | 'flex'", default: "'auto'" },
+      { name: 'loadMode', description: '加载模式', type: "'pagination' | 'scroll'", default: "'pagination'" },
+      { name: 'pagination', description: '分页配置', type: 'false | TableProps.pagination', default: '{ pageSize: 10 }' },
+      { name: 'hasMore', description: '是否有更多数据（滚动模式）', type: 'boolean', default: 'false' },
+      { name: 'onLoadMore', description: '加载更多回调', type: '() => void', default: '-' },
+      { name: 'scrollThreshold', description: '滚动加载阈值', type: 'number', default: '100' },
+      { name: 'heightMode', description: '高度模式', type: "'auto' | 'fixed'", default: "'fixed'" },
+      { name: 'height', description: '固定高度', type: 'number | string', default: '-' },
+      { name: 'loading', description: '加载状态', type: 'boolean', default: 'false' },
+      { name: 'onChange', description: '表格变化回调', type: 'TableProps.onChange', default: '-' },
+      { name: 'rowSelection', description: '行选择配置', type: 'TableProps.rowSelection', default: '-' },
+      { name: 'scrollX', description: '水平滚动宽度', type: "number | string | true", default: '-' },
+    ],
+    codeSnippet: `import { DataTable } from 'guanshu-component-library';
+import type { DataTableColumn } from 'guanshu-component-library';
+
+const columns: DataTableColumn[] = [
+  { title: '商品名称', dataIndex: 'productName', width: 200 },
+  {
+    title: '销量',
+    dataIndex: 'sales',
+    width: 120,
+    sorter: true,
+    align: 'right',
+    render: (text) => text.toLocaleString(),
+  },
+  {
+    title: '状态',
+    dataIndex: 'status',
+    width: 100,
+    align: 'center',
+    render: (text) => <Tag color={text === 'active' ? 'green' : 'red'}>{text}</Tag>,
+  },
+];
+
+// 分页加载
+<DataTable
+  columns={columns}
+  dataSource={data}
+  loadMode="pagination"
+  heightMode="fixed"
+  height={300}
+/>
+
+// 无限滚动
+<DataTable
+  columns={columns}
+  dataSource={data}
+  loadMode="scroll"
+  heightMode="fixed"
+  height={300}
+  hasMore={hasMore}
+  onLoadMore={handleLoadMore}
 />`,
   },
 ];
