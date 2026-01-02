@@ -15,9 +15,11 @@ export type HeightMode = 'auto' | 'fixed';
 
 export interface DataTableColumn<T = any> {
   /** 列标题 */
-  title: string;
+  title: string | React.ReactNode;
   /** 数据字段 */
   dataIndex: string;
+  /** 列唯一标识 */
+  key?: string;
   /** 列宽（columnLayout 为 'auto' 时生效） */
   width?: number;
   /** 最小列宽（columnLayout 为 'flex' 时生效） */
@@ -30,6 +32,14 @@ export interface DataTableColumn<T = any> {
   fixed?: 'left' | 'right';
   /** 对齐方式 */
   align?: 'left' | 'center' | 'right';
+  /** 文本溢出省略，配合 Tooltip 使用 */
+  ellipsis?: boolean | { showTitle?: boolean };
+  /** 子列（多层级列头） */
+  children?: DataTableColumn<T>[];
+  /** 自定义单元格属性 */
+  onCell?: (record: T, index?: number) => React.HTMLAttributes<HTMLElement>;
+  /** 自定义表头单元格属性 */
+  onHeaderCell?: () => React.HTMLAttributes<HTMLElement>;
 }
 
 export interface DataTableProps<T = any> {
@@ -64,7 +74,7 @@ export interface DataTableProps<T = any> {
 
   // ========== 其他配置 ==========
   /** 加载状态 */
-  loading?: boolean;
+  loading?: boolean | { spinning?: boolean; delay?: number };
   /** 表格变化回调 */
   onChange?: TableProps<T>['onChange'];
   /** 行选择配置 */
@@ -77,6 +87,18 @@ export interface DataTableProps<T = any> {
   scrollX?: number | string | true;
   /** 是否显示边框 */
   bordered?: boolean;
+  /** 表格尺寸 */
+  size?: 'large' | 'middle' | 'small';
+  /** 行类名（支持条件高亮） */
+  rowClassName?: string | ((record: T, index: number) => string);
+  /** 展开行配置（树形表格/详情行） */
+  expandable?: TableProps<T>['expandable'];
+  /** 空数据时显示的内容 */
+  locale?: TableProps<T>['locale'];
+  /** 表格标题 */
+  title?: TableProps<T>['title'];
+  /** 表格底部汇总 */
+  summary?: TableProps<T>['summary'];
 }
 
 /**
@@ -111,18 +133,28 @@ export const DataTable = <T extends object = any>({
   className,
   scrollX,
   bordered = false,
+  size,
+  rowClassName,
+  expandable,
+  locale,
+  title,
+  summary,
 }: DataTableProps<T>) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
 
-  // 转换列配置
-  const antdColumns: ColumnsType<T> = columns.map((col) => ({
+  // 递归转换列配置（支持多层级列头）
+  const convertColumn = (col: DataTableColumn<T>): any => ({
     title: col.title,
     dataIndex: col.dataIndex,
+    key: col.key || col.dataIndex,
     width: columnLayout === 'auto' ? col.width : undefined,
     minWidth: columnLayout === 'flex' ? col.minWidth : undefined,
     fixed: col.fixed,
     align: col.align,
+    ellipsis: col.ellipsis,
+    onCell: col.onCell,
+    onHeaderCell: col.onHeaderCell,
     sorter: col.sorter
       ? (a: T, b: T) => {
           const aVal = (a as any)[col.dataIndex];
@@ -132,7 +164,10 @@ export const DataTable = <T extends object = any>({
         }
       : undefined,
     render: col.render,
-  }));
+    children: col.children?.map(convertColumn),
+  });
+
+  const antdColumns: ColumnsType<T> = columns.map(convertColumn);
 
   // 无限滚动处理
   const handleScroll = useCallback(
@@ -210,6 +245,14 @@ export const DataTable = <T extends object = any>({
     return null;
   };
 
+  // 处理 loading 状态
+  const getLoadingConfig = () => {
+    if (typeof loading === 'boolean') {
+      return loading && !isLoadingMore;
+    }
+    return isLoadingMore ? false : loading;
+  };
+
   return (
     <div ref={containerRef} className={containerClassName} style={style}>
       <Table<T>
@@ -217,13 +260,19 @@ export const DataTable = <T extends object = any>({
         dataSource={dataSource}
         rowKey={rowKey}
         pagination={loadMode === 'pagination' ? pagination : false}
-        loading={loading && !isLoadingMore}
+        loading={getLoadingConfig()}
         onChange={onChange}
         rowSelection={rowSelection}
         scroll={getScrollConfig()}
         onScroll={loadMode === 'scroll' ? handleScroll : undefined}
         footer={loadMode === 'scroll' ? renderScrollFooter : undefined}
         bordered={bordered}
+        size={size}
+        rowClassName={rowClassName}
+        expandable={expandable}
+        locale={locale}
+        title={title}
+        summary={summary}
       />
     </div>
   );

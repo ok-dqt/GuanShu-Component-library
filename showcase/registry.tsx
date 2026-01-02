@@ -529,11 +529,116 @@ const mediaColumns: DataTableColumn[] = [
   },
 ];
 
+// 树形表格数据
+const treeData = [
+  {
+    key: '1',
+    name: '华东区',
+    sales: 50000,
+    revenue: 500000,
+    children: [
+      { key: '1-1', name: '上海', sales: 30000, revenue: 300000 },
+      { key: '1-2', name: '杭州', sales: 20000, revenue: 200000 },
+    ],
+  },
+  {
+    key: '2',
+    name: '华南区',
+    sales: 40000,
+    revenue: 400000,
+    children: [
+      { key: '2-1', name: '广州', sales: 25000, revenue: 250000 },
+      { key: '2-2', name: '深圳', sales: 15000, revenue: 150000 },
+    ],
+  },
+];
+
+// 多层级列头配置
+const groupedColumns: DataTableColumn[] = [
+  { title: '区域/城市', dataIndex: 'name', width: 150 },
+  {
+    title: '销售数据',
+    dataIndex: 'salesGroup',
+    children: [
+      {
+        title: '销量',
+        dataIndex: 'sales',
+        width: 120,
+        align: 'right',
+        render: (text) => text?.toLocaleString() || '-',
+      },
+      {
+        title: '销售额',
+        dataIndex: 'revenue',
+        width: 150,
+        align: 'right',
+        render: (text) => (text ? `¥${text.toLocaleString()}` : '-'),
+      },
+    ],
+  },
+];
+
+// 带省略和高亮的列配置
+const ellipsisColumns: DataTableColumn[] = [
+  { title: '商品名称', dataIndex: 'productName', width: 100, ellipsis: true },
+  {
+    title: '商品描述',
+    dataIndex: 'description',
+    width: 150,
+    ellipsis: { showTitle: false },
+    render: (text) => (
+      <span title={text} style={{ cursor: 'help' }}>
+        {text}
+      </span>
+    ),
+  },
+  {
+    title: '销量',
+    dataIndex: 'sales',
+    width: 100,
+    align: 'right',
+    render: (text) => text.toLocaleString(),
+  },
+  {
+    title: '状态',
+    dataIndex: 'status',
+    width: 80,
+    align: 'center',
+    render: (text) =>
+      text === 'active' ? (
+        <Tag color="green">在售</Tag>
+      ) : (
+        <Tag color="red">下架</Tag>
+      ),
+  },
+];
+
+// 带描述的 Mock 数据
+const generateDescMockData = (count: number) => {
+  return Array.from({ length: count }, (_, index) => ({
+    key: index + 1,
+    productName: `商品${index + 1}`,
+    description: `这是一段很长的商品描述文本，用于展示文本省略功能，商品${index + 1}的详细介绍说明`,
+    sales: Math.floor(Math.random() * 10000),
+    status: Math.random() > 0.5 ? 'active' : 'inactive',
+  }));
+};
+
 const DataTableDemo = () => {
-  const [activeTab, setActiveTab] = React.useState<'pagination' | 'scroll' | 'flex' | 'media'>('pagination');
+  const [activeTab, setActiveTab] = React.useState<
+    'pagination' | 'scroll' | 'flex' | 'media' | 'highlight' | 'tree' | 'grouped' | 'autoload'
+  >('pagination');
   const [scrollData, setScrollData] = React.useState(() => generateTableMockData(10));
   const [scrollLoading, setScrollLoading] = React.useState(false);
   const [hasMore, setHasMore] = React.useState(true);
+
+  // 自动加载状态
+  const [autoLoadData, setAutoLoadData] = React.useState(() => generateTableMockData(10));
+  const [autoLoading, setAutoLoading] = React.useState(false);
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [cachedPages, setCachedPages] = React.useState<number[]>([1]);
+  const [batchSize, setBatchSize] = React.useState(3);
+  const totalPages = 10;
 
   const handleLoadMore = React.useCallback(() => {
     setScrollLoading(true);
@@ -547,17 +652,70 @@ const DataTableDemo = () => {
     }, 800);
   }, [scrollData.length]);
 
+  // 自动加载处理
+  const handleLoadNextPage = React.useCallback(() => {
+    if (currentPage >= totalPages) return;
+    setAutoLoading(true);
+    setTimeout(() => {
+      const nextPage = currentPage + 1;
+      const newData = generateTableMockData(10, autoLoadData.length);
+      setAutoLoadData((prev) => [...prev, ...newData]);
+      setCurrentPage(nextPage);
+      setCachedPages((prev) => [...prev, nextPage]);
+      setAutoLoading(false);
+    }, 600);
+  }, [currentPage, autoLoadData.length]);
+
+  // 自动批量加载
+  const [isAutoLoading, setIsAutoLoading] = React.useState(false);
+  const autoLoadRef = React.useRef<NodeJS.Timeout | null>(null);
+
+  const handleStartAutoLoad = React.useCallback(() => {
+    setIsAutoLoading(true);
+    const loadBatch = (remaining: number) => {
+      if (remaining <= 0 || currentPage >= totalPages) {
+        setIsAutoLoading(false);
+        return;
+      }
+      setAutoLoading(true);
+      autoLoadRef.current = setTimeout(() => {
+        const nextPage = currentPage + (batchSize - remaining + 1);
+        if (nextPage <= totalPages) {
+          const newData = generateTableMockData(10, autoLoadData.length + (batchSize - remaining) * 10);
+          setAutoLoadData((prev) => [...prev, ...newData]);
+          setCurrentPage(nextPage);
+          setCachedPages((prev) => [...new Set([...prev, nextPage])]);
+        }
+        setAutoLoading(false);
+        loadBatch(remaining - 1);
+      }, 500);
+    };
+    loadBatch(batchSize);
+  }, [batchSize, currentPage, autoLoadData.length]);
+
+  const handleStopLoad = React.useCallback(() => {
+    setIsAutoLoading(false);
+    setAutoLoading(false);
+    if (autoLoadRef.current) {
+      clearTimeout(autoLoadRef.current);
+    }
+  }, []);
+
   const tabs = [
     { key: 'pagination', label: '分页模式' },
     { key: 'scroll', label: '无限滚动' },
+    { key: 'autoload', label: '自动加载' },
     { key: 'flex', label: '自动列宽' },
     { key: 'media', label: '图片/视频' },
+    { key: 'highlight', label: '行高亮' },
+    { key: 'tree', label: '树形表格' },
+    { key: 'grouped', label: '多级表头' },
   ];
 
   return (
     <div className="space-y-4">
       {/* 标签切换 */}
-      <div className="flex gap-2 border-b border-gray-200 pb-3">
+      <div className="flex flex-wrap gap-2 border-b border-gray-200 pb-3">
         {tabs.map((tab) => (
           <button
             key={tab.key}
@@ -618,6 +776,45 @@ const DataTableDemo = () => {
         </div>
       )}
 
+      {/* 自动加载模式 */}
+      {activeTab === 'autoload' && (
+        <div className="space-y-3">
+          <p className="text-sm text-gray-500">
+            结合 <code className="text-accent-600">AutoLoadControl</code> 和{' '}
+            <code className="text-accent-600">PaginationFooter</code> 实现自动批量加载
+          </p>
+          <DataTable
+            columns={fixedWidthColumns}
+            dataSource={autoLoadData}
+            columnLayout="auto"
+            loadMode="pagination"
+            heightMode="fixed"
+            height={280}
+            bordered
+            pagination={false}
+            loading={autoLoading}
+          />
+          <div className="flex items-center justify-between border-t pt-3">
+            <PaginationFooter
+              current={currentPage}
+              pageSize={10}
+              total={totalPages * 10}
+              loadedCount={autoLoadData.length}
+              cachedPages={cachedPages}
+              onChange={setCurrentPage}
+            />
+            <AutoLoadControl
+              isLoading={isAutoLoading}
+              batchSize={batchSize}
+              onBatchSizeChange={setBatchSize}
+              onLoadNextPage={handleLoadNextPage}
+              onStartAutoLoad={handleStartAutoLoad}
+              onStopLoad={handleStopLoad}
+            />
+          </div>
+        </div>
+      )}
+
       {/* 自动列宽（Flex） */}
       {activeTab === 'flex' && (
         <div>
@@ -648,6 +845,72 @@ const DataTableDemo = () => {
             loadMode="pagination"
             heightMode="fixed"
             height={320}
+            bordered
+            pagination={false}
+          />
+        </div>
+      )}
+
+      {/* 行高亮 + 文本省略 */}
+      {activeTab === 'highlight' && (
+        <div>
+          <p className="text-sm text-gray-500 mb-3">
+            <code className="text-accent-600">rowClassName</code> 条件高亮 +{' '}
+            <code className="text-accent-600">ellipsis</code> 文本省略 +{' '}
+            <code className="text-accent-600">size="small"</code>
+          </p>
+          <DataTable
+            columns={ellipsisColumns}
+            dataSource={generateDescMockData(10)}
+            columnLayout="auto"
+            loadMode="pagination"
+            heightMode="fixed"
+            height={300}
+            bordered
+            size="small"
+            pagination={false}
+            rowClassName={(record: any) =>
+              record.status === 'active' ? 'bg-green-50' : ''
+            }
+          />
+        </div>
+      )}
+
+      {/* 树形表格 */}
+      {activeTab === 'tree' && (
+        <div>
+          <p className="text-sm text-gray-500 mb-3">
+            <code className="text-accent-600">expandable</code> 树形表格，支持展开/收起
+          </p>
+          <DataTable
+            columns={groupedColumns.filter((c) => !c.children)}
+            dataSource={treeData}
+            columnLayout="auto"
+            loadMode="pagination"
+            bordered
+            pagination={false}
+            expandable={{
+              defaultExpandAllRows: true,
+              childrenColumnName: 'children',
+            }}
+          />
+        </div>
+      )}
+
+      {/* 多级表头 */}
+      {activeTab === 'grouped' && (
+        <div>
+          <p className="text-sm text-gray-500 mb-3">
+            <code className="text-accent-600">children</code> 配置多级表头（分组列头）
+          </p>
+          <DataTable
+            columns={groupedColumns}
+            dataSource={treeData.flatMap((item) => [
+              { ...item, children: undefined },
+              ...(item.children || []),
+            ])}
+            columnLayout="auto"
+            loadMode="pagination"
             bordered
             pagination={false}
           />
@@ -1037,6 +1300,33 @@ const [value, setValue] = useState('basic');
     { key: 'export', text: '导出', onClick: () => {} },
   ]}
 />`,
+    aiGuidance: {
+      whenToUse: [
+        '弹窗需要展示品牌 Logo 和标题时',
+        '弹窗头部需要放置多个操作按钮（如刷新、导出、清除缓存）时',
+        '需要统一弹窗头部样式规范时',
+      ],
+      whenNotToUse: [
+        '简单确认弹窗 → 使用 Ant Design Modal 默认头部',
+        '头部只需要标题无操作 → 使用 SimpleModalHeader',
+        '移动端弹窗 → 考虑使用 Drawer 组件',
+      ],
+      constraints: [
+        '必须传入 title 属性',
+        'actions 数组中每项必须包含 key 和 text',
+        '配合 Modal 使用时需设置 title={null} 避免重复标题',
+      ],
+      compositionWith: [
+        'Modal - 作为 Modal 的自定义 title 使用',
+        'FilterBar - 放在 Header 下方提供筛选功能',
+        'ExportButton - 在 actions 中添加导出操作',
+      ],
+      commonMistakes: [
+        '同时使用 Modal 的 title 和 ModalActionHeader，导致两个标题',
+        'actions 中的 onClick 未绑定正确的处理函数',
+        '忘记设置 showSeparator={false} 导致多余的分隔线',
+      ],
+    },
   },
   {
     id: 'simple-modal-header',
@@ -1059,6 +1349,33 @@ const [value, setValue] = useState('basic');
   onFeedback={() => console.log('反馈')}
   onUserCenter={() => console.log('个人中心')}
 />`,
+    aiGuidance: {
+      whenToUse: [
+        '弹窗只需要简洁的标题展示时',
+        '需要提供用户反馈和个人中心入口时',
+        '需要清除缓存功能时',
+      ],
+      whenNotToUse: [
+        '需要在头部放置多个自定义操作按钮 → 使用 ModalActionHeader',
+        '简单确认弹窗 → 使用 Ant Design Modal 默认头部',
+        '弹窗无需额外操作入口时',
+      ],
+      constraints: [
+        '必须传入 title 属性',
+        '配合 Modal 使用时需设置 title={null}',
+        '回调函数需要正确处理业务逻辑',
+      ],
+      compositionWith: [
+        'Modal - 作为 Modal 的自定义 title 使用',
+        'DataTable - 弹窗内展示数据表格',
+        'FilterBar - 放在 Header 下方',
+      ],
+      commonMistakes: [
+        '同时使用 Modal 的 title 和 SimpleModalHeader',
+        '未提供 onFeedback 但用户期望有反馈入口',
+        'onClearCache 调用后未正确清理页面状态',
+      ],
+    },
   },
   {
     id: 'card-grid',
@@ -1181,6 +1498,31 @@ const [value, setValue] = useState<Dayjs | null>(null);
   onClose={() => setVisible(false)}
   onUpdate={() => console.log('更新')}
 />`,
+    aiGuidance: {
+      whenToUse: [
+        '需要提示用户有新版本可用时',
+        '应用启动时检测到版本更新时',
+        '需要引导用户更新扩展/应用时',
+      ],
+      whenNotToUse: [
+        '常规信息提示 → 使用 message 或 notification',
+        '需要复杂交互的弹窗 → 使用 Modal + 自定义内容',
+        '强制更新场景 → 需要禁用关闭按钮的自定义弹窗',
+      ],
+      constraints: [
+        '必须提供 visible 状态控制显示',
+        'onClose 和 onUpdate 回调必须正确处理',
+        '更新操作应跳转到正确的更新地址',
+      ],
+      compositionWith: [
+        '独立使用，通常不需要与其他组件组合',
+      ],
+      commonMistakes: [
+        '忘记在 onClose 中设置 visible 为 false',
+        'onUpdate 未正确处理更新逻辑（如跳转商店页面）',
+        '频繁弹出更新提示影响用户体验',
+      ],
+    },
   },
   {
     id: 'loading-progress',
@@ -1325,11 +1667,17 @@ setProgress({ stage: 'downloading', current: 0, total: 100 });
       { name: 'scrollThreshold', description: '滚动加载阈值', type: 'number', default: '100' },
       { name: 'heightMode', description: '高度模式', type: "'auto' | 'fixed'", default: "'fixed'" },
       { name: 'height', description: '固定高度', type: 'number | string', default: '-' },
-      { name: 'loading', description: '加载状态', type: 'boolean', default: 'false' },
+      { name: 'loading', description: '加载状态', type: 'boolean | { spinning, delay }', default: 'false' },
       { name: 'onChange', description: '表格变化回调', type: 'TableProps.onChange', default: '-' },
       { name: 'rowSelection', description: '行选择配置', type: 'TableProps.rowSelection', default: '-' },
       { name: 'scrollX', description: '水平滚动宽度', type: "number | string | true", default: '-' },
       { name: 'bordered', description: '是否显示边框', type: 'boolean', default: 'false' },
+      { name: 'size', description: '表格尺寸', type: "'large' | 'middle' | 'small'", default: '-' },
+      { name: 'rowClassName', description: '行类名（支持条件高亮）', type: 'string | ((record, index) => string)', default: '-' },
+      { name: 'expandable', description: '展开行配置（树形表格）', type: 'TableProps.expandable', default: '-' },
+      { name: 'locale', description: '空数据时的显示内容', type: 'TableProps.locale', default: '-' },
+      { name: 'title', description: '表格标题渲染函数', type: 'TableProps.title', default: '-' },
+      { name: 'summary', description: '表格底部汇总渲染函数', type: 'TableProps.summary', default: '-' },
     ],
     codeSnippet: `import { DataTable } from 'guanshu-component-library';
 import type { DataTableColumn } from 'guanshu-component-library';
@@ -1389,6 +1737,9 @@ const columns: DataTableColumn[] = [
         '数据量较大（100+ 条）需要无限滚动加载时',
         '表格需要展示图片、视频等媒体内容时',
         '需要用户选择多行数据进行批量操作时',
+        '需要展示树形层级数据时（使用 expandable）',
+        '需要多层级分组列头展示复杂数据结构时',
+        '需要根据数据条件高亮特定行时（使用 rowClassName）',
       ],
       whenNotToUse: [
         '简单的键值对展示 → 使用 DataItem 或 Descriptions',
@@ -1403,6 +1754,9 @@ const columns: DataTableColumn[] = [
         'loadMode="scroll" 时必须同时提供 hasMore 和 onLoadMore',
         'heightMode="fixed" 时必须提供 height 值',
         'columnLayout="auto" 时使用 width，columnLayout="flex" 时使用 minWidth',
+        '多层级列头使用 children 配置，父列不需要 dataIndex',
+        '树形表格需配置 expandable.childrenColumnName 指定子节点字段',
+        'ellipsis 生效需要设置列 width，否则无法触发省略',
       ],
       compositionWith: [
         'MediaPreview - 在表格单元格中展示图片/视频预览',
@@ -1411,6 +1765,8 @@ const columns: DataTableColumn[] = [
         'TableDataSummary - 展示已选数量和总数统计',
         'ExportButton - 表格数据导出功能',
         'PaginationFooter - 自定义分页底栏（如需显示缓存状态）',
+        'Tooltip - 配合 ellipsis 展示完整文本',
+        'DataItem - 在单元格内展示带变化率的数据',
       ],
       commonMistakes: [
         '忘记设置 height 导致 heightMode="fixed" 时表格高度为 0',
@@ -1418,12 +1774,17 @@ const columns: DataTableColumn[] = [
         'loadMode="scroll" 但未处理 loading 状态，导致重复触发加载',
         '大数据量时未使用虚拟滚动，导致页面卡顿（建议 500+ 条时考虑分页）',
         'render 函数中直接修改原数据，应返回新的 ReactNode',
+        '使用 ellipsis 但未设置列宽，导致省略不生效',
+        '树形表格数据中 children 字段名与 childrenColumnName 不匹配',
+        'rowClassName 返回的类名未在 CSS 中定义，导致样式无效',
       ],
       performanceTips: [
         '数据量超过 100 条时，优先使用 loadMode="pagination" 分页加载',
         '无限滚动时，每次加载 10-20 条为宜，避免一次性加载过多',
         '复杂的 render 函数应使用 React.memo 或 useMemo 优化',
         '频繁更新的数据源，确保正确设置 rowKey 避免不必要的重渲染',
+        '树形表格数据量大时，考虑使用 expandable.expandedRowKeys 控制展开状态',
+        '大量使用 ellipsis 时，避免在 render 中重复创建 Tooltip 组件',
       ],
     },
   },
