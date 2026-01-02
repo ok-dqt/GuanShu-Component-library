@@ -5,6 +5,7 @@ import 'dayjs/locale/zh-cn';
 import dayjs, { Dayjs } from 'dayjs';
 import { DateType } from './types';
 import { getDateRange } from './utils';
+import { designTokens } from '../../theme';
 import './index.less';
 
 export interface DateTypeSelectorProps {
@@ -61,8 +62,8 @@ export const DateTypeSelector: React.FC<DateTypeSelectorProps> = ({
           margin: 0,
           padding: '4px 0',
           textAlign: 'center',
-          backgroundColor: isSelected ? '#1890ff' : isHovered ? '#e6f7ff' : 'transparent',
-          color: isSelected ? '#fff' : isDisabled ? '#d9d9d9' : isCurrentMonth ? '#000' : '#d9d9d9',
+          backgroundColor: isSelected ? designTokens.colors.primary : isHovered ? designTokens.background.hover : 'transparent',
+          color: isSelected ? designTokens.text.inverse : isDisabled ? designTokens.text.disabled : isCurrentMonth ? designTokens.text.primary : designTokens.text.disabled,
           cursor: isDisabled ? 'not-allowed' : 'pointer',
         }}
         onMouseEnter={() => !isDisabled && setHoveredDate(date)}
@@ -86,11 +87,11 @@ export const DateTypeSelector: React.FC<DateTypeSelectorProps> = ({
 
   const renderDatePicker = () => {
     const commonStyle = {
-      background: '#fff',
-      borderRadius: 6,
+      background: designTokens.background.card,
+      borderRadius: designTokens.borderRadius.base,
       boxShadow:
         '0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 9px 28px 8px rgba(0, 0, 0, 0.05)',
-      padding: 12,
+      padding: designTokens.spacing.md,
       transform: 'scale(0.85)',
       transformOrigin: 'top left',
       width: 'fit-content',

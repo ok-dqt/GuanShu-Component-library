@@ -81,4 +81,3 @@ export const ExportProgressOverlay: React.FC<ExportProgressOverlayProps> = ({
   );
 };
 
-export default ExportProgressOverlay;

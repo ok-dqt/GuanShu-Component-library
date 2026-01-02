@@ -97,4 +97,3 @@ export const MultiStepProgress: React.FC<MultiStepProgressProps> = ({
   );
 };
 
-export default MultiStepProgress;

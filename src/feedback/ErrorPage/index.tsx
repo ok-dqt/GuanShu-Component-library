@@ -108,4 +108,3 @@ export const ErrorPage: React.FC<ErrorPageProps> = ({
   );
 };
 
-export default ErrorPage;

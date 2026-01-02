@@ -75,4 +75,3 @@ export const FilterTags: React.FC<FilterTagsProps> = ({
   );
 };
 
-export default FilterTags;

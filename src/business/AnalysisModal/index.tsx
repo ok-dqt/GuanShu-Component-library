@@ -62,4 +62,3 @@ export const AnalysisModal: React.FC<AnalysisModalProps> = ({
   );
 };
 
-export default AnalysisModal;

@@ -2,6 +2,7 @@ import React from 'react';
 import { Segmented, Tooltip } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import type { SegmentedProps } from 'antd';
+import { designTokens } from '../../theme';
 
 export interface ModeTabsOption {
   value: string;
@@ -28,7 +29,7 @@ export const ModeTabs: React.FC<ModeTabsProps> = ({ value, options, onChange, si
             style={{
               fontSize: 12,
               cursor: 'pointer',
-              color: value === option.value ? '#fff' : '#8c8c8c',
+              color: value === option.value ? designTokens.text.inverse : designTokens.text.secondary,
             }}
           />
         </Tooltip>

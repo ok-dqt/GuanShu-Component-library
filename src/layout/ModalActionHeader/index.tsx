@@ -83,4 +83,3 @@ export const ModalActionHeader: React.FC<ModalActionHeaderProps> = ({
   );
 };
 
-export default ModalActionHeader;

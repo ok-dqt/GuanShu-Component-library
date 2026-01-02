@@ -37,6 +37,8 @@ export default defineConfig({
         'antd',
         '@ant-design/icons',
         'dayjs',
+        // 排除 demo 文件
+        /\/demo\//,
       ],
       output: {
         // 保持 CSS 文件名

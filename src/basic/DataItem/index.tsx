@@ -1,4 +1,5 @@
 import React from 'react';
+import { designTokens } from '../../theme';
 import './index.less';
 
 /**
@@ -9,7 +10,6 @@ const formatPercent = (num: string | number) => {
     return num.trim();
   }
   const res = `${(+num * 100).toFixed(2)}%`.trim();
-  // 如果是整数，去除小数部分
   if (res.endsWith('.00%')) {
     return res.slice(0, -4) + '%';
   }
@@ -50,7 +50,7 @@ export const DataItem: React.FC<DataItemProps> = (props) => {
         <div
           style={{
             marginLeft: 8,
-            color: isPositive ? 'red' : 'green',
+            color: isPositive ? designTokens.colors.error : designTokens.colors.success,
           }}
         >
           {isPositive ? '↑' : '↓'}
@@ -61,4 +61,3 @@ export const DataItem: React.FC<DataItemProps> = (props) => {
   );
 };
 
-export default DataItem;

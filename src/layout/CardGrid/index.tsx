@@ -144,4 +144,3 @@ export const CardGrid = memo<CardGridProps>(({
 
 CardGrid.displayName = 'CardGrid';
 
-export default CardGrid;

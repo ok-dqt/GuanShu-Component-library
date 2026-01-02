@@ -85,4 +85,3 @@ export const UpdateModal: React.FC<UpdateModalProps> = ({
   );
 };
 
-export default UpdateModal;

@@ -3,6 +3,7 @@ import { Pagination } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { AutoLoadControl } from '../../feedback/AutoLoadControl';
 import type { LoadingProgress } from '../../feedback/AutoLoadControl';
+import { designTokens } from '../../theme';
 import './index.less';
 
 export interface PaginationFooterProps {
@@ -99,7 +100,7 @@ export const PaginationFooter: React.FC<PaginationFooterProps> = ({
       <div className="pagination-footer__left">
         {showLoadedInfo && (
           <span className="pagination-footer__info">
-            <InfoCircleOutlined style={{ color: '#2563eb', fontSize: 14 }} />
+            <InfoCircleOutlined style={{ color: designTokens.colors.primary, fontSize: 14 }} />
             已加载: {loadedCount}/{total}条数据
           </span>
         )}

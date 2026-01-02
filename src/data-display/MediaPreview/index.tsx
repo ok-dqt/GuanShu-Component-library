@@ -88,4 +88,3 @@ export const MediaPreview = memo(({
 
 MediaPreview.displayName = 'MediaPreview';
 
-export default MediaPreview;

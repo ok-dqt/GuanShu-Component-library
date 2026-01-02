@@ -278,4 +278,3 @@ export const DataTable = <T extends object = any>({
   );
 };
 
-export default DataTable;

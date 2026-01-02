@@ -183,4 +183,3 @@ export const OverviewItem: React.FC<OverviewItemProps> = ({
   );
 };
 
-export default OverviewItem;

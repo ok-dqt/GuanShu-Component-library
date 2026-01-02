@@ -40,4 +40,3 @@ export const TableDataSummary: React.FC<TableDataSummaryProps> = ({
   );
 };
 
-export default TableDataSummary;

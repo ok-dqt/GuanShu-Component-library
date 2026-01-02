@@ -41,4 +41,3 @@ export const ExpandButton: React.FC<ExpandButtonProps> = ({
   </div>
 );
 
-export default ExpandButton;

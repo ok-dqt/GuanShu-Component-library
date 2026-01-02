@@ -46,4 +46,3 @@ export const Logo: React.FC<LogoProps> = ({
 };
 
 export { logoSvg };
-export default Logo;

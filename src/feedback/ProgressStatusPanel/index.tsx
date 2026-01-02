@@ -86,4 +86,3 @@ export const ProgressStatusPanel: React.FC<ProgressStatusPanelProps> = ({
   );
 };
 
-export default ProgressStatusPanel;

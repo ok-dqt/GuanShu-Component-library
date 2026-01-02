@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, Statistic } from 'antd';
 import { ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
+import { designTokens } from '../../theme';
 import './index.less';
 
 export interface StatisticCardProps {
@@ -33,7 +34,7 @@ export const StatisticCard: React.FC<StatisticCardProps> = ({
     if (!trend) return null;
 
     const isUp = trend.type === 'up';
-    const color = isUp ? '#3f8600' : '#cf1322';
+    const color = isUp ? designTokens.colors.success : designTokens.colors.error;
     const Icon = isUp ? ArrowUpOutlined : ArrowDownOutlined;
 
     return (

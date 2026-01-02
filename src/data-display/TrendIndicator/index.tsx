@@ -1,5 +1,6 @@
 import React from 'react';
 import { ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
+import { designTokens } from '../../theme';
 import './index.less';
 
 export type TrendType = 'up' | 'down';
@@ -25,9 +26,9 @@ export const TrendIndicator: React.FC<TrendIndicatorProps> = ({
 
   const getColor = () => {
     if (reverseColor) {
-      return isUp ? '#cf1322' : '#3f8600';
+      return isUp ? designTokens.colors.error : designTokens.colors.success;
     }
-    return isUp ? '#3f8600' : '#cf1322';
+    return isUp ? designTokens.colors.success : designTokens.colors.error;
   };
 
   const Icon = isUp ? ArrowUpOutlined : ArrowDownOutlined;

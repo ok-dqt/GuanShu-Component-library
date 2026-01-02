@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, Statistic, Row, Col } from 'antd';
 import { ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
+import { designTokens } from '../../theme';
 import './index.less';
 
 export interface DataCardProps {
@@ -55,15 +56,15 @@ export const DataCard: React.FC<DataCardProps> = ({
       {trend && (
         <div className="data-card__trend">
           {trend.type === 'up' ? (
-            <span style={{ color: '#cf1322' }}>
+            <span style={{ color: designTokens.colors.error }}>
               <ArrowUpOutlined /> {trend.value}%
             </span>
           ) : (
-            <span style={{ color: '#3f8600' }}>
+            <span style={{ color: designTokens.colors.success }}>
               <ArrowDownOutlined /> {Math.abs(trend.value)}%
             </span>
           )}
-          <span style={{ marginLeft: 4, color: '#666' }}>环比</span>
+          <span style={{ marginLeft: 4, color: designTokens.text.secondary }}>环比</span>
         </div>
       )}
 
@@ -101,4 +102,3 @@ export const DataCard: React.FC<DataCardProps> = ({
   );
 };
 
-export default DataCard;
