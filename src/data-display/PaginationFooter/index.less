@@ -1,0 +1,33 @@
+.pagination-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+
+  .pagination-footer-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    .pagination-footer-info {
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+      color: #666;
+    }
+  }
+
+  .pagination-footer-unloaded-page {
+    position: relative;
+
+    .pagination-footer-unloaded-dot {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      width: 6px;
+      height: 6px;
+      background: #ff4d4f;
+      border-radius: 50%;
+    }
+  }
+}

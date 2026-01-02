@@ -1,0 +1,26 @@
+// Modal 样式
+.guanshu-antd-modal-content {
+  background: #fff;
+  padding: 0 0 !important;
+  .guanshu-antd-modal-header {
+    padding: 16px 24px !important;
+    margin-bottom: 0 !important;
+    background: #fff !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+  }
+  .guanshu-antd-modal-body {
+    padding: 24px 24px !important;
+    background: #fff !important;
+  }
+}
+
+// Modal 圆角
+.guanshu-antd-modal .guanshu-antd-modal-content {
+  overflow: hidden;
+  border-radius: 12px !important;
+}
+
+// Message 层级 - 确保高于 Modal 遮罩
+.guanshu-antd-message {
+  z-index: 2000001000 !important;
+}

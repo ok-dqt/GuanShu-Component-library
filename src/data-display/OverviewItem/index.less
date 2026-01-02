@@ -1,0 +1,72 @@
+// OverviewItem 概览卡片样式
+.overview-item {
+  height: 100%;
+  border-radius: 12px;
+  border: 1px solid #f0f0f0;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+  transition: all 0.2s ease;
+
+  :global {
+    .ant-card-body {
+      padding: 12px 16px;
+    }
+  }
+}
+
+.overview-item__content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.overview-item__title {
+  font-size: 12px;
+  font-weight: 500;
+  color: #8c8c8c;
+  letter-spacing: 0.3px;
+}
+
+.overview-item__value {
+  font-size: 20px;
+  font-weight: bold;
+  color: #262626;
+}
+
+.overview-item__compare {
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.overview-item__compare-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.overview-item__compare-label {
+  color: #8c8c8c;
+}
+
+.overview-item__compare-value {
+  color: #595959;
+}
+
+.overview-item__compare-rate {
+  font-weight: 500;
+}
+
+.overview-item__compare-rate--up {
+  color: #f5222d;
+}
+
+.overview-item__compare-rate--down {
+  color: #52c41a;
+}
+
+.overview-item__compare-rate--neutral {
+  color: #8c8c8c;
+}

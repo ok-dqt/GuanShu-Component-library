@@ -1,0 +1,57 @@
+// 弹窗操作头部样式
+.modal-action-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  height: 40px;
+  padding: 0 16px;
+
+  // 左侧：logo + 标题
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__logo {
+    height: 24px;
+    width: auto;
+  }
+
+  &__title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #000000d9;
+  }
+
+  // 右侧：操作按钮区
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  // 单个操作项
+  &__action-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 14px;
+    color: #000000d9;
+    cursor: pointer;
+    transition: color 0.3s;
+
+    &:hover {
+      color: #1890ff;
+    }
+  }
+
+  // 分隔符
+  &__separator {
+    font-size: 16px;
+    color: #e5e5e5;
+    user-select: none;
+  }
+}

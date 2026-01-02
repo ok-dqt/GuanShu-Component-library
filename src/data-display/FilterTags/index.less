@@ -1,0 +1,31 @@
+.filter-tags {
+  &__scroll {
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    &::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba(0, 0, 0, 0.2);
+      border-radius: 3px;
+    }
+  }
+
+  &__tag {
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+
+    &.ant-tag-checkable-checked {
+      background-color: #1890ff;
+      color: white;
+      border-color: #1890ff;
+    }
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}

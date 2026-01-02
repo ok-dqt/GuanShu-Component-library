@@ -1,0 +1,62 @@
+.nav-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: all 0.3s;
+  white-space: nowrap;
+
+  &--clickable {
+    cursor: pointer;
+
+    &:hover {
+      background: #f0f0f0;
+    }
+  }
+
+  &--value {
+    background: #f5f5f5;
+    border: 1px solid #d9d9d9;
+
+    .nav-button-label {
+      color: #666;
+    }
+
+    .nav-button-value {
+      color: #333;
+      font-weight: 500;
+      margin-left: 4px;
+    }
+
+    .nav-button-copy {
+      color: #1890ff;
+      font-size: 12px;
+      margin-left: 4px;
+      cursor: pointer;
+
+      &--success {
+        color: #52c41a;
+      }
+    }
+  }
+
+  &--link {
+    color: #1890ff;
+    cursor: pointer;
+
+    &:hover {
+      color: #40a9ff;
+    }
+
+    .nav-button-icon {
+      font-size: 12px;
+    }
+  }
+
+  .nav-button-icon {
+    display: inline-flex;
+    align-items: center;
+  }
+}
