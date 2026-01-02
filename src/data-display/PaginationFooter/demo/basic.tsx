@@ -1,53 +1,114 @@
 import React, { useState } from 'react';
 import { PaginationFooter } from '../index';
-import { message, Card } from 'antd';
+import { message, Card, Space, Typography } from 'antd';
+
+const { Text } = Typography;
 
 export default () => {
-  const [current, setCurrent] = useState(1);
-  const [loadedCount, setLoadedCount] = useState(20);
-  const [cachedPages, setCachedPages] = useState([1, 2]);
+  // 示例1: 正常状态
+  const [current1, setCurrent1] = useState(1);
+  const [loadedCount1, setLoadedCount1] = useState(40);
+  const [cachedPages1, setCachedPages1] = useState([1, 2]);
+
+  // 示例2: 加载中状态
+  const [current2, setCurrent2] = useState(3);
+
+  // 示例3: 全部加载完成
+  const [current3, setCurrent3] = useState(5);
+
+  // 示例4: 最小化显示
+  const [current4, setCurrent4] = useState(1);
 
   const total = 100;
   const pageSize = 20;
 
-  const handlePageChange = (page: number) => {
-    setCurrent(page);
-    if (!cachedPages.includes(page)) {
-      setCachedPages([...cachedPages, page]);
-      setLoadedCount(loadedCount + pageSize);
+  const handlePageChange1 = (page: number) => {
+    setCurrent1(page);
+    if (!cachedPages1.includes(page)) {
+      setCachedPages1([...cachedPages1, page]);
+      setLoadedCount1(loadedCount1 + pageSize);
       message.success(`加载第 ${page} 页`);
     }
   };
 
-  const handleLoadNextPage = () => {
-    const nextPage = current + 1;
-    if (nextPage <= Math.ceil(total / pageSize)) {
-      handlePageChange(nextPage);
-    }
-  };
-
-  const handleStartAutoLoad = (batchSize: number) => {
-    message.info(`开始自动加载 ${batchSize} 页`);
-  };
-
   return (
-    <div>
-      <Card size="small" style={{ marginBottom: 16 }}>
-        <div>当前页: {current}</div>
-        <div>已加载: {loadedCount}/{total}条</div>
-        <div>已缓存页数: {cachedPages.join(', ')}</div>
+    <Space direction="vertical" size="large" style={{ width: '100%' }}>
+      {/* 正常状态 */}
+      <Card size="small" title="正常状态">
+        <Text type="secondary" style={{ display: 'block', marginBottom: 12 }}>
+          显示已加载信息、自动加载控制、分页器，未加载页码带红点标记
+        </Text>
+        <PaginationFooter
+          current={current1}
+          pageSize={pageSize}
+          total={total}
+          loadedCount={loadedCount1}
+          cachedPages={cachedPages1}
+          onChange={handlePageChange1}
+          onLoadNextPage={() => handlePageChange1(current1 + 1)}
+          onStartAutoLoad={(batchSize) => message.info(`自动加载 ${batchSize} 页`)}
+        />
       </Card>
 
-      <PaginationFooter
-        current={current}
-        pageSize={pageSize}
-        total={total}
-        loadedCount={loadedCount}
-        cachedPages={cachedPages}
-        onChange={handlePageChange}
-        onLoadNextPage={handleLoadNextPage}
-        onStartAutoLoad={handleStartAutoLoad}
-      />
-    </div>
+      {/* 加载中状态 */}
+      <Card size="small" title="加载中状态">
+        <Text type="secondary" style={{ display: 'block', marginBottom: 12 }}>
+          自动加载进行中，显示进度条和停止按钮
+        </Text>
+        <PaginationFooter
+          current={current2}
+          pageSize={pageSize}
+          total={total}
+          loadedCount={60}
+          cachedPages={[1, 2, 3]}
+          onChange={setCurrent2}
+          onLoadNextPage={() => {}}
+          onStartAutoLoad={() => {}}
+          onStopLoading={() => message.warning('停止加载')}
+          isAutoLoading={true}
+          autoLoadProgress={{
+            currentPage: 2,
+            totalPages: 5,
+            percentage: 40,
+          }}
+        />
+      </Card>
+
+      {/* 全部加载完成 */}
+      <Card size="small" title="全部加载完成（最后一页）">
+        <Text type="secondary" style={{ display: 'block', marginBottom: 12 }}>
+          数据全部加载完成且在最后一页时，自动隐藏加载控制
+        </Text>
+        <PaginationFooter
+          current={current3}
+          pageSize={pageSize}
+          total={total}
+          loadedCount={100}
+          cachedPages={[1, 2, 3, 4, 5]}
+          onChange={setCurrent3}
+          onLoadNextPage={() => {}}
+          onStartAutoLoad={() => {}}
+        />
+      </Card>
+
+      {/* 最小化显示 */}
+      <Card size="small" title="最小化显示">
+        <Text type="secondary" style={{ display: 'block', marginBottom: 12 }}>
+          隐藏顶部边框、已加载信息、总数显示、自动加载控制
+        </Text>
+        <PaginationFooter
+          current={current4}
+          pageSize={pageSize}
+          total={total}
+          loadedCount={20}
+          cachedPages={[1]}
+          onChange={setCurrent4}
+          showBorderTop={false}
+          showLoadedInfo={false}
+          showTotal={false}
+          showAutoLoad={false}
+        />
+      </Card>
+    </Space>
   );
 };

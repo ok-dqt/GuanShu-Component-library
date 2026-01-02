@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import { Divider } from 'antd';
 import './index.less';
 
 export interface ActionItem {
@@ -24,8 +25,6 @@ export interface ModalActionHeaderProps {
   logo?: string | React.ReactNode;
   /** 操作按钮列表 */
   actions?: ActionItem[];
-  /** 是否显示分隔符 */
-  showSeparator?: boolean;
   /** 自定义样式 */
   style?: React.CSSProperties;
 }
@@ -38,7 +37,6 @@ export const ModalActionHeader: React.FC<ModalActionHeaderProps> = ({
   title,
   logo,
   actions = [],
-  showSeparator = true,
   style,
 }) => {
   const renderIcon = (icon: React.ReactNode | string) => {
@@ -53,15 +51,15 @@ export const ModalActionHeader: React.FC<ModalActionHeaderProps> = ({
     <div className="modal-action-header" style={style}>
       <div className="modal-action-header__left">
         {logo && (
-          <>
+          <div className="modal-action-header__logo-wrap">
             {typeof logo === 'string' ? (
               <img src={logo} alt="logo" className="modal-action-header__logo" />
             ) : (
               logo
             )}
-            {showSeparator && <span className="modal-action-header__separator">｜</span>}
-          </>
+          </div>
         )}
+        {logo && <Divider type="vertical" />}
         <span className="modal-action-header__title">{title}</span>
       </div>
 
@@ -76,9 +74,7 @@ export const ModalActionHeader: React.FC<ModalActionHeaderProps> = ({
                 {action.icon && renderIcon(action.icon)}
                 {action.text && <span>{action.text}</span>}
               </span>
-              {showSeparator && index < actions.length - 1 && (
-                <span className="modal-action-header__separator">｜</span>
-              )}
+              {index < actions.length - 1 && <Divider type="vertical" />}
             </React.Fragment>
           ))}
         </div>

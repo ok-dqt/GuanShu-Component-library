@@ -1,76 +1,89 @@
-.auto-load-control-loading {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-
-  .auto-load-control-loading-icon {
-    color: #1890ff;
-    font-size: 16px;
-  }
-
-  .auto-load-control-loading-text {
-    font-size: 14px;
-    color: #666;
-  }
-
-  .auto-load-control-progress {
-    flex-shrink: 0;
-  }
-
-  .auto-load-control-stop-link {
-    font-size: 14px;
-  }
-}
+// 主题色（与 guanshu 项目保持一致）
+@color-primary: #2563eb;
+@color-primary-hover: #3b82f6;
 
 .auto-load-control {
   display: flex;
   align-items: center;
   gap: 12px;
+}
 
-  .auto-load-control-combo {
-    display: flex;
-    align-items: center;
-    border: 1px solid #d9d9d9;
-    border-radius: 6px;
-    overflow: hidden;
-    height: 32px;
+// 自动加载组合按钮（左侧触发区 + 右侧下拉）
+// 高度与 antd Button 保持一致（theme.components.Button.controlHeight: 30）
+.auto-load-control__combo-btn {
+  display: flex;
+  align-items: center;
+  height: 30px;
+  background-color: @color-primary;
+  border-radius: 6px;
+  padding-right: 6px;
+}
 
-    &:hover {
-      border-color: #4096ff;
-    }
+// 左侧触发区
+.auto-load-control__combo-trigger {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 12px;
+  height: 100%;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
 
-    .auto-load-control-combo-trigger {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      padding: 0 12px;
-      height: 100%;
-      background: #fff;
-      border-right: 1px solid #d9d9d9;
-      transition: all 0.3s;
+  &:hover {
+    background-color: @color-primary-hover;
+    border-radius: 6px 0 0 6px;
+  }
+}
 
-      &:hover {
-        background: #f5f5f5;
-      }
+.auto-load-control__icon {
+  font-size: 14px;
+}
 
-      .auto-load-control-icon {
-        font-size: 14px;
-        color: #666;
-      }
+// 页数选择器
+.auto-load-control__select {
+  width: 70px;
+}
 
-      span {
-        font-size: 14px;
-        color: #333;
-      }
-    }
+// 下拉菜单弹出层 - 设置最小宽度避免省略号
+.auto-load-control__select-popup {
+  min-width: 70px !important;
+}
 
-    .auto-load-control-select {
-      border: none;
+// Loading 态容器
+.auto-load-control__loading-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  background-color: #fff;
+  border-radius: 6px;
+  border: 1px solid #f0f0f0;
+}
 
-      :global(.ant-select-selector) {
-        border: none !important;
-        box-shadow: none !important;
-      }
-    }
+.auto-load-control__loading-icon {
+  font-size: 14px;
+  color: #171717;
+}
+
+.auto-load-control__loading-text {
+  font-size: 14px;
+  color: #333;
+  white-space: nowrap;
+}
+
+.auto-load-control__progress {
+  display: flex;
+  align-items: center;
+}
+
+.auto-load-control__stop-link {
+  font-size: 14px;
+  color: #2563eb;
+  white-space: nowrap;
+
+  &:hover {
+    color: #3b82f6;
   }
 }

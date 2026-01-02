@@ -1,33 +1,81 @@
+// 分页底部栏样式
 .pagination-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 0;
+  &__container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+    border-top: 1px solid #f0f0f0;
+  }
 
-  .pagination-footer-left {
+  // 左侧容器（信息 + 控制按钮，单行不换行）
+  &__left {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
+    white-space: nowrap;
+  }
 
-    .pagination-footer-info {
-      display: flex;
-      align-items: center;
-      font-size: 14px;
-      color: #666;
+  // 信息文本
+  &__info {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #666;
+    font-size: 14px;
+  }
+
+  // 未加载页码的样式（灰色背景+灰色文字，类似禁用）
+  &__unloaded-page {
+    position: relative;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    background-color: #f5f5f5;
+    color: #a3a3a3;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-sizing: border-box;
+
+    &:hover {
+      background-color: #e6e6e6;
+      border-color: #bfbfbf;
     }
   }
 
-  .pagination-footer-unloaded-page {
-    position: relative;
+  // 未加载页码右下角红点
+  &__unloaded-dot {
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    width: 6px;
+    height: 6px;
+    background-color: #ff4d4f;
+    border-radius: 50%;
+  }
 
-    .pagination-footer-unloaded-dot {
-      position: absolute;
-      top: 2px;
-      right: 2px;
-      width: 6px;
-      height: 6px;
-      background: #ff4d4f;
-      border-radius: 50%;
-    }
+  // 进度条容器
+  &__progress-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  // 进度文本
+  &__progress-text {
+    color: #666;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+  // 进度百分比
+  &__progress-percent {
+    color: #666;
+    font-size: 14px;
+    font-weight: 500;
+    min-width: 40px;
+    text-align: right;
   }
 }
