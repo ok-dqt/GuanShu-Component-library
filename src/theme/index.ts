@@ -6,47 +6,140 @@ export const MODAL_Z_INDEX = 2000000000;
 /** Message 层级，需高于 Modal 遮罩（遮罩默认 zIndex = Modal zIndex） */
 export const MESSAGE_Z_INDEX = MODAL_Z_INDEX + 1000;
 
-// 自定义主题 - Ant Design 蓝色系
+/**
+ * 设计 Token - 颜色系统
+ * 与主项目 xc-sealseek-extension-sycm 保持一致
+ */
+export const designTokens = {
+  // 品牌色
+  colors: {
+    primary: '#2563EB', // 观数蓝 - blue/600
+    primaryHover: '#3B82F6', // blue/500
+    primaryActive: '#1D4ED8', // blue/700
+
+    success: '#16A34A', // green/600
+    warning: '#EA580C', // orange/600
+    error: '#DC2626', // red/600
+    info: '#2563EB', // blue/600
+  },
+
+  // 中性色
+  neutral: {
+    50: '#FAFAFA',
+    100: '#F5F5F5',
+    200: '#E5E5E5',
+    300: '#D4D4D4',
+    400: '#A3A3A3',
+    500: '#737373',
+    600: '#525252',
+    700: '#404040',
+    800: '#262626',
+    900: '#171717',
+  },
+
+  // 文本色
+  text: {
+    primary: '#171717', // neutral/900
+    secondary: '#737373', // neutral/500
+    tertiary: '#A3A3A3', // neutral/400
+    disabled: '#D4D4D4', // neutral/300
+    inverse: '#FFFFFF',
+  },
+
+  // 背景色
+  background: {
+    page: '#FAFAFA', // neutral/50
+    card: '#FFFFFF',
+    hover: '#F5F5F5', // neutral/100
+  },
+
+  // 边框色
+  border: {
+    default: '#E5E5E5', // neutral/200
+    light: '#F5F5F5', // neutral/100
+  },
+
+  // 字体
+  typography: {
+    fontFamily:
+      "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+    fontSize: {
+      xs: 12,
+      sm: 14,
+      base: 14,
+      lg: 15,
+      xl: 20,
+    },
+    fontWeight: {
+      normal: 400,
+      medium: 500,
+      semibold: 600,
+      bold: 700,
+    },
+  },
+
+  // 间距
+  spacing: {
+    xs: 4,
+    sm: 8,
+    md: 12,
+    lg: 16,
+    xl: 24,
+    xxl: 32,
+  },
+
+  // 圆角
+  borderRadius: {
+    sm: 4,
+    base: 6,
+    lg: 12,
+    full: 9999,
+  },
+};
+
+// Ant Design 主题配置
 const theme: ThemeConfig = {
   token: {
-    // 品牌色 - Ant Design 官方蓝色
-    colorPrimary: '#1677ff', // 主色 - Ant Design Blue
-    colorSuccess: '#52c41a', // 成功色
-    colorWarning: '#faad14', // 警告色
-    colorError: '#ff4d4f', // 错误色
-    colorInfo: '#1677ff', // 信息色
+    // 品牌色
+    colorPrimary: designTokens.colors.primary,
+    colorSuccess: designTokens.colors.success,
+    colorWarning: designTokens.colors.warning,
+    colorError: designTokens.colors.error,
+    colorInfo: designTokens.colors.info,
 
     // 中性色
-    colorTextBase: 'rgba(0, 0, 0, 0.88)', // 基础文本色
-    colorTextSecondary: 'rgba(0, 0, 0, 0.65)', // 次要文本色
-    colorTextTertiary: 'rgba(0, 0, 0, 0.45)', // 辅助文本色
+    colorTextBase: designTokens.text.primary,
+    colorTextSecondary: designTokens.text.secondary,
+    colorTextTertiary: designTokens.text.tertiary,
 
     // 背景和边框
-    colorBgBase: '#f5f5f5', // 基础背景色
-    colorBgContainer: '#ffffff', // 容器/卡片背景色
-    colorBorder: '#d9d9d9', // 边框色
+    colorBgBase: designTokens.background.page,
+    colorBgContainer: designTokens.background.card,
+    colorBorder: designTokens.border.default,
 
     // 基础样式
-    borderRadius: 6, // 全局圆角
+    borderRadius: designTokens.borderRadius.base,
   },
 
   components: {
     Button: {
-      colorPrimary: '#1677ff',
-      colorTextLightSolid: '#ffffff',
-      controlHeight: 32,
+      colorPrimary: designTokens.colors.primary,
+      colorTextLightSolid: '#FFFFFF',
+      defaultActiveBorderColor: designTokens.colors.primary,
+      defaultActiveColor: designTokens.colors.primary,
+      controlHeight: 30,
     },
     Segmented: {
-      itemSelectedBg: '#1677ff', // 选中项背景色
-      itemSelectedColor: '#ffffff', // 选中项文字色
-      itemActiveBg: '#1677ff', // 滑块动画背景色
+      itemSelectedBg: designTokens.colors.primary,
+      itemSelectedColor: '#FFFFFF',
+      itemActiveBg: designTokens.colors.primary,
     },
     Table: {
       padding: 8,
     },
     Progress: {
-      defaultColor: '#1677ff',
-      colorSuccess: '#1677ff', // 100% 时也保持蓝色，不变绿
+      defaultColor: designTokens.colors.primary,
+      colorSuccess: designTokens.colors.primary,
     },
   },
 };

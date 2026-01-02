@@ -1,84 +1,97 @@
 import React, { useState } from 'react';
-import { MenuOutlined, CodeOutlined, PlayCircleOutlined, AppstoreOutlined, RightOutlined } from '@ant-design/icons';
+import {
+  MenuOutlined,
+  CodeOutlined,
+  PlayCircleOutlined,
+  AppstoreOutlined,
+  RightOutlined,
+  RocketOutlined,
+  BgColorsOutlined,
+  FontSizeOutlined,
+  ColumnWidthOutlined,
+  GithubOutlined,
+} from '@ant-design/icons';
 import { COMPONENT_REGISTRY } from './registry';
 import { ComponentCategory } from './types';
+import { GettingStarted, DesignColors, DesignTypography, DesignSpacing } from './pages';
+
+type PageType = 'getting-started' | 'colors' | 'typography' | 'spacing' | 'component';
+
+interface NavItem {
+  id: string;
+  name: string;
+  icon: React.ReactNode;
+  type: PageType;
+  componentId?: string;
+}
+
+interface NavGroup {
+  title: string;
+  items: NavItem[];
+}
 
 const App = () => {
-  const [selectedComponentId, setSelectedComponentId] = useState<string>(COMPONENT_REGISTRY[0].id);
+  const [selectedNavId, setSelectedNavId] = useState<string>('getting-started');
   const [activeTab, setActiveTab] = useState<'preview' | 'code'>('preview');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-  const selectedComponent = COMPONENT_REGISTRY.find(c => c.id === selectedComponentId) || COMPONENT_REGISTRY[0];
+  // 构建导航结构
+  const navGroups: NavGroup[] = [
+    {
+      title: '开始',
+      items: [
+        { id: 'getting-started', name: '快速开始', icon: <RocketOutlined />, type: 'getting-started' },
+      ],
+    },
+    {
+      title: '设计规范',
+      items: [
+        { id: 'colors', name: '颜色', icon: <BgColorsOutlined />, type: 'colors' },
+        { id: 'typography', name: '字体', icon: <FontSizeOutlined />, type: 'typography' },
+        { id: 'spacing', name: '间距', icon: <ColumnWidthOutlined />, type: 'spacing' },
+      ],
+    },
+    ...Object.values(ComponentCategory).map((category) => ({
+      title: category,
+      items: COMPONENT_REGISTRY.filter((c) => c.category === category).map((comp) => ({
+        id: comp.id,
+        name: comp.name,
+        icon: null,
+        type: 'component' as PageType,
+        componentId: comp.id,
+      })),
+    })),
+  ];
 
-  const categories = Object.values(ComponentCategory);
+  // 获取当前选中的导航项
+  const getCurrentNavItem = (): NavItem | undefined => {
+    for (const group of navGroups) {
+      const item = group.items.find((i) => i.id === selectedNavId);
+      if (item) return item;
+    }
+    return navGroups[0].items[0];
+  };
 
-  return (
-    <div className="flex h-screen bg-[#f5f5f5] overflow-hidden text-sm">
+  const currentNav = getCurrentNavItem();
+  const selectedComponent = currentNav?.type === 'component'
+    ? COMPONENT_REGISTRY.find((c) => c.id === currentNav.componentId)
+    : null;
 
-      {/* Sidebar */}
-      <div className={`
-        ${isSidebarOpen ? 'w-64' : 'w-0'}
-        bg-white border-r border-gray-200 transition-all duration-300 flex flex-col z-20 overflow-hidden
-      `}>
-        <div className="h-14 flex items-center px-6 border-b border-gray-100 flex-shrink-0">
-          <AppstoreOutlined className="w-6 h-6 text-ant-primary mr-2" style={{ fontSize: '24px' }} />
-          <span className="font-bold text-lg text-ant-text">观数组件库</span>
-        </div>
-
-        <div className="flex-1 overflow-y-auto py-4">
-          {categories.map(category => {
-            const categoryComponents = COMPONENT_REGISTRY.filter(c => c.category === category);
-            if (categoryComponents.length === 0) return null;
-
-            return (
-              <div key={category} className="mb-6">
-                <h3 className="px-6 mb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">{category}</h3>
-                <ul>
-                  {categoryComponents.map(comp => (
-                    <li key={comp.id}>
-                      <button
-                        onClick={() => {
-                           setSelectedComponentId(comp.id);
-                           setActiveTab('preview');
-                        }}
-                        className={`
-                          w-full text-left px-6 py-2 flex items-center justify-between group hover:text-ant-primary transition-colors
-                          ${selectedComponentId === comp.id ? 'text-ant-primary bg-blue-50 border-r-2 border-ant-primary' : 'text-ant-text'}
-                        `}
-                      >
-                        {comp.name}
-                        {selectedComponentId === comp.id && <RightOutlined className="w-4 h-4" style={{ fontSize: '16px' }} />}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0">
-
-        {/* Header */}
-        <header className="h-14 bg-white border-b border-gray-200 flex items-center justify-between px-6 flex-shrink-0">
-          <div className="flex items-center">
-            <button
-              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className="mr-4 p-1 rounded hover:bg-gray-100 text-gray-500"
-            >
-              <MenuOutlined className="w-5 h-5" style={{ fontSize: '20px' }} />
-            </button>
-            <h1 className="text-xl font-medium text-ant-text">{selectedComponent.name}</h1>
-            <span className="ml-4 px-2 py-0.5 text-xs bg-blue-100 text-ant-primary rounded">{selectedComponent.category}</span>
-          </div>
-        </header>
-
-        {/* Component Display Area */}
-        <div className="flex-1 overflow-auto p-8 relative">
-          <div className="max-w-5xl mx-auto">
-
+  // 渲染页面内容
+  const renderContent = () => {
+    switch (currentNav?.type) {
+      case 'getting-started':
+        return <GettingStarted />;
+      case 'colors':
+        return <DesignColors />;
+      case 'typography':
+        return <DesignTypography />;
+      case 'spacing':
+        return <DesignSpacing />;
+      case 'component':
+        if (!selectedComponent) return null;
+        return (
+          <>
             <p className="text-gray-600 mb-8 text-base">{selectedComponent.description}</p>
 
             <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden mb-8">
@@ -88,7 +101,7 @@ const App = () => {
                     onClick={() => setActiveTab('preview')}
                     className={`
                       px-3 py-1.5 rounded-md flex items-center gap-2 transition-all text-xs font-medium
-                      ${activeTab === 'preview' ? 'bg-white text-ant-primary shadow-sm' : 'text-gray-500 hover:text-gray-700'}
+                      ${activeTab === 'preview' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}
                     `}
                   >
                     <PlayCircleOutlined style={{ fontSize: '12px' }} /> 预览
@@ -97,7 +110,7 @@ const App = () => {
                     onClick={() => setActiveTab('code')}
                     className={`
                       px-3 py-1.5 rounded-md flex items-center gap-2 transition-all text-xs font-medium
-                      ${activeTab === 'code' ? 'bg-white text-ant-primary shadow-sm' : 'text-gray-500 hover:text-gray-700'}
+                      ${activeTab === 'code' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}
                     `}
                   >
                     <CodeOutlined style={{ fontSize: '12px' }} /> 代码
@@ -132,9 +145,9 @@ const App = () => {
                     </tr>
                   </thead>
                   <tbody className="text-sm">
-                    {selectedComponent.propsDefinition.map(prop => (
+                    {selectedComponent.propsDefinition.map((prop) => (
                       <tr key={prop.name} className="border-b border-gray-100 last:border-0 hover:bg-gray-50">
-                        <td className="py-3 px-2 text-ant-primary font-mono">{prop.name}</td>
+                        <td className="py-3 px-2 text-blue-600 font-mono">{prop.name}</td>
                         <td className="py-3 px-2 text-gray-600">{prop.description}</td>
                         <td className="py-3 px-2 text-pink-600 font-mono text-xs">{prop.type}</td>
                         <td className="py-3 px-2 text-gray-500 font-mono">{prop.default || '-'}</td>
@@ -144,8 +157,109 @@ const App = () => {
                 </table>
               </div>
             </div>
+          </>
+        );
+      default:
+        return null;
+    }
+  };
 
+  const getPageTitle = () => {
+    if (currentNav?.type === 'component' && selectedComponent) {
+      return selectedComponent.name;
+    }
+    return currentNav?.name || '';
+  };
+
+  return (
+    <div className="flex h-screen bg-[#f5f5f5] overflow-hidden text-sm">
+      {/* Sidebar */}
+      <div
+        className={`
+        ${isSidebarOpen ? 'w-64' : 'w-0'}
+        bg-white border-r border-gray-200 transition-all duration-300 flex flex-col z-20 overflow-hidden
+      `}
+      >
+        <div className="h-14 flex items-center px-6 border-b border-gray-100 flex-shrink-0">
+          <AppstoreOutlined className="w-6 h-6 text-blue-600 mr-2" style={{ fontSize: '24px' }} />
+          <span className="font-bold text-lg text-gray-900">观数组件库</span>
+        </div>
+
+        <div className="flex-1 overflow-y-auto py-4">
+          {navGroups.map((group) => {
+            if (group.items.length === 0) return null;
+
+            return (
+              <div key={group.title} className="mb-6">
+                <h3 className="px-6 mb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                  {group.title}
+                </h3>
+                <ul>
+                  {group.items.map((item) => (
+                    <li key={item.id}>
+                      <button
+                        onClick={() => {
+                          setSelectedNavId(item.id);
+                          if (item.type === 'component') {
+                            setActiveTab('preview');
+                          }
+                        }}
+                        className={`
+                          w-full text-left px-6 py-2 flex items-center justify-between group hover:text-blue-600 transition-colors
+                          ${selectedNavId === item.id ? 'text-blue-600 bg-blue-50 border-r-2 border-blue-600' : 'text-gray-700'}
+                        `}
+                      >
+                        <span className="flex items-center gap-2">
+                          {item.icon && <span className="text-gray-400">{item.icon}</span>}
+                          {item.name}
+                        </span>
+                        {selectedNavId === item.id && <RightOutlined className="w-4 h-4" style={{ fontSize: '12px' }} />}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Footer */}
+        <div className="px-6 py-4 border-t border-gray-100 text-xs text-gray-400">
+          v1.0.0
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Header */}
+        <header className="h-14 bg-white border-b border-gray-200 flex items-center justify-between px-6 flex-shrink-0">
+          <div className="flex items-center">
+            <button
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              className="mr-4 p-1 rounded hover:bg-gray-100 text-gray-500"
+            >
+              <MenuOutlined className="w-5 h-5" style={{ fontSize: '20px' }} />
+            </button>
+            <h1 className="text-xl font-medium text-gray-900">{getPageTitle()}</h1>
+            {currentNav?.type === 'component' && selectedComponent && (
+              <span className="ml-4 px-2 py-0.5 text-xs bg-blue-100 text-blue-600 rounded">
+                {selectedComponent.category}
+              </span>
+            )}
           </div>
+          <a
+            href="https://github.com/ok-dqt/GuanShu-Component-library"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-500 hover:text-gray-700"
+          >
+            <GithubOutlined style={{ fontSize: '20px' }} />
+          </a>
+        </header>
+
+        {/* Content Area */}
+        <div className="flex-1 overflow-auto p-8 relative">
+          <div className="max-w-5xl mx-auto">{renderContent()}</div>
         </div>
       </div>
     </div>
