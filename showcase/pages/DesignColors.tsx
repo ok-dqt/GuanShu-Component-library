@@ -8,12 +8,12 @@ const ColorBlock: React.FC<{
 }> = ({ name, color, textColor = '#fff' }) => (
   <div className="flex flex-col">
     <div
-      className="w-full h-16 rounded-lg flex items-end p-2 shadow-sm"
+      className="w-full h-20 rounded-xl flex items-end p-3 border border-neutral-700/50"
       style={{ backgroundColor: color, color: textColor }}
     >
       <span className="text-xs font-mono opacity-90">{color}</span>
     </div>
-    <span className="mt-2 text-sm text-gray-600">{name}</span>
+    <span className="mt-2 text-sm text-neutral-400">{name}</span>
   </div>
 );
 
@@ -21,9 +21,9 @@ const ColorRow: React.FC<{
   title: string;
   colors: { name: string; color: string; textColor?: string }[];
 }> = ({ title, colors }) => (
-  <div className="mb-8">
-    <h3 className="text-base font-medium text-gray-900 mb-4">{title}</h3>
-    <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4">
+  <div className="mb-10">
+    <h3 className="text-lg font-semibold text-white mb-5">{title}</h3>
+    <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-4">
       {colors.map((c) => (
         <ColorBlock key={c.name} {...c} />
       ))}
@@ -67,8 +67,8 @@ export const DesignColors: React.FC = () => {
 
   return (
     <div className="max-w-4xl">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">颜色系统</h1>
-      <p className="text-gray-600 mb-8">
+      <h1 className="text-3xl font-bold text-white mb-3">颜色系统</h1>
+      <p className="text-neutral-400 text-lg mb-10">
         观数组件库的颜色规范，与主项目保持一致。主色为观数蓝 #2563EB。
       </p>
 
@@ -78,19 +78,19 @@ export const DesignColors: React.FC = () => {
       <ColorRow title="文本色" colors={textColors} />
 
       {/* 使用说明 */}
-      <div className="mt-8 p-4 bg-gray-50 rounded-lg">
-        <h3 className="text-base font-medium text-gray-900 mb-2">使用方式</h3>
-        <div className="text-sm text-gray-600 space-y-2">
+      <div className="mt-10 p-6 bg-neutral-900 rounded-xl border border-neutral-800">
+        <h3 className="text-base font-semibold text-white mb-4">使用方式</h3>
+        <div className="text-sm text-neutral-400 space-y-3">
           <p>
-            <strong>TypeScript:</strong>{' '}
-            <code className="bg-gray-200 px-1 rounded">
+            <span className="text-neutral-300 font-medium">TypeScript:</span>{' '}
+            <code className="bg-neutral-800 text-accent-400 px-2 py-1 rounded font-mono text-xs">
               {`import { designTokens } from 'guanshu-component-library'`}
             </code>
           </p>
           <p>
-            <strong>Less:</strong>{' '}
-            <code className="bg-gray-200 px-1 rounded">@color-primary</code>,{' '}
-            <code className="bg-gray-200 px-1 rounded">@neutral-500</code>
+            <span className="text-neutral-300 font-medium">Less:</span>{' '}
+            <code className="bg-neutral-800 text-accent-400 px-2 py-1 rounded font-mono text-xs">@color-primary</code>,{' '}
+            <code className="bg-neutral-800 text-accent-400 px-2 py-1 rounded font-mono text-xs">@neutral-500</code>
           </p>
         </div>
       </div>

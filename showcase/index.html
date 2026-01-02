@@ -4,34 +4,134 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>观数组件库</title>
+    <!-- Fonts: Inter for UI, JetBrains Mono for code -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
         theme: {
           extend: {
+            fontFamily: {
+              sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+              mono: ['JetBrains Mono', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+            },
             colors: {
-              ant: {
-                primary: '#1677ff',
-                'primary-hover': '#4096ff',
-                'primary-active': '#0958d9',
-                success: '#52c41a',
-                warning: '#faad14',
-                error: '#ff4d4f',
-                border: '#d9d9d9',
-                text: 'rgba(0, 0, 0, 0.88)',
-                'text-secondary': 'rgba(0, 0, 0, 0.65)',
-                bg: '#f5f5f5',
-              }
-            }
+              // Neutral grays (Vercel-inspired)
+              neutral: {
+                50: '#fafafa',
+                100: '#f4f4f5',
+                150: '#ebebec',
+                200: '#e4e4e7',
+                300: '#d4d4d8',
+                400: '#a1a1aa',
+                500: '#71717a',
+                600: '#52525b',
+                700: '#3f3f46',
+                800: '#27272a',
+                850: '#1f1f23',
+                900: '#18181b',
+                950: '#09090b',
+              },
+              // Primary accent (subtle blue)
+              accent: {
+                50: '#eff6ff',
+                100: '#dbeafe',
+                200: '#bfdbfe',
+                300: '#93c5fd',
+                400: '#60a5fa',
+                500: '#3b82f6',
+                600: '#2563eb',
+                700: '#1d4ed8',
+              },
+              // Semantic colors
+              success: '#22c55e',
+              warning: '#f59e0b',
+              error: '#ef4444',
+            },
           }
         }
       }
     </script>
     <style>
+      /* Base styles */
+      * {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
       body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-        background-color: #f5f5f5;
-        color: rgba(0, 0, 0, 0.88);
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background-color: #09090b;
+        color: #fafafa;
+      }
+
+      /* Custom scrollbar - elegant thin design */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(113, 113, 122, 0.4);
+        border-radius: 4px;
+        border: 2px solid transparent;
+        background-clip: padding-box;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: rgba(113, 113, 122, 0.6);
+        border: 2px solid transparent;
+        background-clip: padding-box;
+      }
+      ::-webkit-scrollbar-corner {
+        background: transparent;
+      }
+
+      /* Firefox scrollbar */
+      * {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(113, 113, 122, 0.4) transparent;
+      }
+
+      /* Sidebar scrollbar - even more subtle */
+      aside::-webkit-scrollbar {
+        width: 6px;
+      }
+      aside::-webkit-scrollbar-thumb {
+        background: rgba(113, 113, 122, 0.3);
+        border-radius: 3px;
+      }
+      aside::-webkit-scrollbar-thumb:hover {
+        background: rgba(113, 113, 122, 0.5);
+      }
+
+      /* Code block syntax highlighting base */
+      .code-block {
+        background: linear-gradient(180deg, #1f1f23 0%, #18181b 100%);
+      }
+
+      /* Grid pattern for preview area */
+      .preview-grid {
+        background-color: #fafafa;
+        background-image:
+          linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
+        background-size: 20px 20px;
+      }
+
+      /* Smooth transitions */
+      .nav-item {
+        transition: all 0.15s ease;
+      }
+
+      /* Focus styles */
+      button:focus-visible {
+        outline: 2px solid #3b82f6;
+        outline-offset: 2px;
       }
     </style>
   </head>
