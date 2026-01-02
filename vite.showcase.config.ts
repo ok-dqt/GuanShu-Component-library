@@ -5,6 +5,7 @@ import path from 'path';
 export default defineConfig({
   plugins: [react()],
   root: './showcase',
+  base: process.env.NODE_ENV === 'production' ? '/GuanShu-Component-library/' : '/',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
