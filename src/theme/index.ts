@@ -127,6 +127,8 @@ const theme: ThemeConfig = {
       colorTextLightSolid: '#FFFFFF',
       defaultActiveBorderColor: designTokens.colors.primary,
       defaultActiveColor: designTokens.colors.primary,
+      defaultColor: designTokens.colors.primary,
+      defaultBorderColor: designTokens.colors.primary,
       controlHeight: 30,
     },
     Segmented: {
@@ -144,6 +146,7 @@ const theme: ThemeConfig = {
   },
 };
 
-export const prefix = 'guanshu-antd';
+/** CSS 类名前缀，与扩展项目保持一致 */
+export const prefix = 'xc-antd';
 
 export { theme };
