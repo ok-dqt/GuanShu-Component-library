@@ -12,6 +12,7 @@ import { MediaPreview } from '../src/data-display/MediaPreview';
 import { OverviewItem } from '../src/data-display/OverviewItem';
 
 // 导入基础组件
+import { Button } from '../src/basic/Button';
 import { DataItem } from '../src/basic/DataItem';
 import { ExpandButton } from '../src/basic/ExpandButton';
 import { ErrorBoundary } from '../src/basic/ErrorBoundary';
@@ -79,6 +80,19 @@ const FilterTagsDemo = () => {
   );
 };
 
+const ButtonDemo = () => (
+  <div className="flex flex-wrap gap-3">
+    <Button variant="solid">主要按钮</Button>
+    <Button variant="outline">次要按钮</Button>
+    <Button variant="ghost">文字按钮</Button>
+    <Button variant="link">链接按钮</Button>
+    <Button variant="solid" size="small">小按钮</Button>
+    <Button variant="solid" size="large">大按钮</Button>
+    <Button variant="solid" loading>加载中</Button>
+    <Button variant="solid" disabled>禁用</Button>
+  </div>
+);
+
 const DataItemDemo = () => (
   <DataItem
     label="访客数"
@@ -135,22 +149,16 @@ const PaginationFooterDemo = () => {
   );
 };
 
-const MediaPreviewDemo = () => {
-  const [visible, setVisible] = React.useState(false);
-  return (
-    <div>
-      <button onClick={() => setVisible(true)}>预览媒体</button>
-      <MediaPreview
-        visible={visible}
-        mediaList={[
-          { type: 'image', url: 'https://via.placeholder.com/800x600', title: '图片1' },
-        ]}
-        current={0}
-        onClose={() => setVisible(false)}
-      />
-    </div>
-  );
-};
+const MediaPreviewDemo = () => (
+  <MediaPreview
+    media={[
+      { type: 'image', url: 'https://via.placeholder.com/200x150', title: '图片1' },
+      { type: 'image', url: 'https://via.placeholder.com/200x150', title: '图片2' },
+      { type: 'video', url: 'https://www.w3schools.com/html/mov_bbb.mp4', title: '视频1' },
+    ]}
+    maxDisplay={3}
+  />
+);
 
 const OverviewItemDemo = () => (
   <OverviewItem
@@ -265,14 +273,14 @@ const DateTypeSelectorDemo = () => {
 };
 
 const DatePopoverDemo = () => {
-  const [date, setDate] = React.useState(new Date());
+  const [value, setValue] = React.useState<import('dayjs').Dayjs | null>(null);
   return (
     <DatePopover
-      date={date}
-      onChange={setDate}
-    >
-      <button>选择日期</button>
-    </DatePopover>
+      type="day"
+      value={value}
+      onChange={setValue}
+      label="选择日期"
+    />
   );
 };
 
@@ -292,10 +300,9 @@ const UpdateModalDemo = () => {
 
 const LoadingProgressDemo = () => (
   <LoadingProgress
-    current={50}
-    total={100}
+    percent={50}
     status="loading"
-    text="加载中..."
+    statusText="加载中..."
   />
 );
 
@@ -326,15 +333,13 @@ const AutoLoadControlDemo = () => {
 };
 
 const ExportProgressOverlayDemo = () => {
-  const [visible, setVisible] = React.useState(false);
+  const [progress, setProgress] = React.useState<{ stage: 'downloading' | 'generating' | 'processing'; current: number; total: number } | null>(null);
   return (
-    <div>
-      <button onClick={() => setVisible(true)}>显示导出进度</button>
+    <div style={{ position: 'relative', height: 200, border: '1px dashed #ccc', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <button onClick={() => setProgress({ stage: 'downloading', current: 65, total: 100 })}>显示导出进度</button>
       <ExportProgressOverlay
-        visible={visible}
-        progress={65}
-        status="exporting"
-        onCancel={() => setVisible(false)}
+        progress={progress}
+        onCancel={() => setProgress(null)}
       />
     </div>
   );
@@ -342,9 +347,16 @@ const ExportProgressOverlayDemo = () => {
 
 const ProgressStatusPanelDemo = () => (
   <ProgressStatusPanel
-    status="processing"
-    progress={75}
-    message="正在处理数据..."
+    title="任务进度"
+    current={3}
+    total={5}
+    statusItems={[
+      { key: '1', label: '准备数据', loading: false, completed: true },
+      { key: '2', label: '处理数据', loading: false, completed: true },
+      { key: '3', label: '分析结果', loading: true, completed: false },
+      { key: '4', label: '生成报告', loading: false, completed: false },
+      { key: '5', label: '完成导出', loading: false, completed: false },
+    ]}
   />
 );
 
@@ -354,6 +366,7 @@ export const COMPONENT_REGISTRY: ComponentInfo[] = [
   {
     id: 'statistic-card',
     name: 'StatisticCard',
+    cnName: '统计卡片',
     category: ComponentCategory.DATA_DISPLAY,
     description: '统计卡片组件，用于展示统计数据，支持显示趋势指示器。',
     component: StatisticCardDemo,
@@ -378,6 +391,7 @@ export const COMPONENT_REGISTRY: ComponentInfo[] = [
   {
     id: 'status-tag',
     name: 'StatusTag',
+    cnName: '状态标签',
     category: ComponentCategory.DATA_DISPLAY,
     description: '状态标签组件，用于显示不同状态的标签。',
     component: StatusTagDemo,
@@ -395,6 +409,7 @@ export const COMPONENT_REGISTRY: ComponentInfo[] = [
   {
     id: 'trend-indicator',
     name: 'TrendIndicator',
+    cnName: '趋势指示器',
     category: ComponentCategory.DATA_DISPLAY,
     description: '趋势指示器组件，用于显示数据趋势，支持上升/下降趋势和颜色反转。',
     component: TrendIndicatorDemo,
@@ -413,6 +428,7 @@ export const COMPONENT_REGISTRY: ComponentInfo[] = [
   {
     id: 'filter-tags',
     name: 'FilterTags',
+    cnName: '筛选标签',
     category: ComponentCategory.DATA_DISPLAY,
     description: '可选择的标签筛选组件，支持多选和加载状态。',
     component: FilterTagsDemo,
@@ -437,8 +453,38 @@ const [activeId, setActiveId] = useState('1');
 />`,
   },
   {
+    id: 'button',
+    name: 'Button',
+    cnName: '按钮',
+    category: ComponentCategory.BASIC,
+    description: '基础按钮组件，支持多种变体、尺寸和状态。',
+    component: ButtonDemo,
+    propsDefinition: [
+      { name: 'variant', description: '按钮变体', type: "'solid' | 'outline' | 'ghost' | 'link'", default: "'solid'" },
+      { name: 'type', description: 'Ant Design 按钮类型', type: "'primary' | 'default' | 'dashed' | 'text' | 'link'", default: '-' },
+      { name: 'size', description: '按钮尺寸', type: "'large' | 'middle' | 'small'", default: "'middle'" },
+      { name: 'loading', description: '加载状态', type: 'boolean', default: 'false' },
+      { name: 'disabled', description: '禁用状态', type: 'boolean', default: 'false' },
+      { name: 'icon', description: '图标', type: 'ReactNode', default: '-' },
+      { name: 'onClick', description: '点击回调', type: '() => void', default: '-' },
+    ],
+    codeSnippet: `import { Button } from 'guanshu-component-library';
+
+// 使用 variant
+<Button variant="solid">主要按钮</Button>
+<Button variant="outline">次要按钮</Button>
+<Button variant="ghost">文字按钮</Button>
+<Button variant="link">链接按钮</Button>
+
+// 尺寸和状态
+<Button size="large">大按钮</Button>
+<Button loading>加载中</Button>
+<Button disabled>禁用</Button>`,
+  },
+  {
     id: 'data-item',
     name: 'DataItem',
+    cnName: '数据项',
     category: ComponentCategory.BASIC,
     description: '数据项组件，用于展示单个数据指标，支持显示环比变化。',
     component: DataItemDemo,
@@ -459,6 +505,7 @@ const [activeId, setActiveId] = useState('1');
   {
     id: 'expand-button',
     name: 'ExpandButton',
+    cnName: '展开按钮',
     category: ComponentCategory.BASIC,
     description: '展开/收起按钮组件。',
     component: ExpandButtonDemo,
@@ -480,6 +527,7 @@ const [isExpanded, setIsExpanded] = useState(false);
   {
     id: 'error-page',
     name: 'ErrorPage',
+    cnName: '错误页面',
     category: ComponentCategory.FEEDBACK,
     description: '通用错误页面组件，支持多种错误状态展示（403/404/500/error/warning/info）。',
     component: ErrorPageDemo,
@@ -500,6 +548,7 @@ const [isExpanded, setIsExpanded] = useState(false);
   {
     id: 'mode-tabs',
     name: 'ModeTabs',
+    cnName: '模式标签',
     category: ComponentCategory.DATA_DISPLAY,
     description: '模式选择标签组件，支持 tooltip 提示。',
     component: ModeTabsDemo,
@@ -525,6 +574,7 @@ const [value, setValue] = useState('basic');
   {
     id: 'pagination-footer',
     name: 'PaginationFooter',
+    cnName: '分页底栏',
     category: ComponentCategory.DATA_DISPLAY,
     description: '分页底部组件，支持自动加载和缓存状态显示。',
     component: PaginationFooterDemo,
@@ -550,29 +600,32 @@ const [value, setValue] = useState('basic');
   {
     id: 'media-preview',
     name: 'MediaPreview',
+    cnName: '媒体预览',
     category: ComponentCategory.DATA_DISPLAY,
-    description: '媒体预览组件，支持图片和视频预览。',
+    description: '媒体预览组件，支持图片和视频缩略图展示，hover 时弹出预览。',
     component: MediaPreviewDemo,
     propsDefinition: [
-      { name: 'visible', description: '是否可见', type: 'boolean', default: '-' },
-      { name: 'mediaList', description: '媒体列表', type: 'MediaItem[]', default: '-' },
-      { name: 'current', description: '当前索引', type: 'number', default: '-' },
-      { name: 'onClose', description: '关闭回调', type: '() => void', default: '-' },
+      { name: 'media', description: '媒体列表', type: 'MediaItem[]', default: '-' },
+      { name: 'maxDisplay', description: '最多展示数量', type: 'number', default: '3' },
+      { name: 'popoverWidth', description: 'Popover 预览宽度', type: 'number', default: '300' },
+      { name: 'videoMaxWidth', description: '视频预览最大宽度', type: 'number', default: '320' },
+      { name: 'videoMaxHeight', description: '视频预览最大高度', type: 'number', default: '400' },
+      { name: 'emptyText', description: '空数据时展示', type: 'ReactNode', default: "'-'" },
     ],
     codeSnippet: `import { MediaPreview } from 'guanshu-component-library';
 
 <MediaPreview
-  visible={visible}
-  mediaList={[
+  media={[
     { type: 'image', url: 'https://...', title: '图片1' },
+    { type: 'video', url: 'https://...', title: '视频1' },
   ]}
-  current={0}
-  onClose={() => setVisible(false)}
+  maxDisplay={3}
 />`,
   },
   {
     id: 'overview-item',
     name: 'OverviewItem',
+    cnName: '概览项',
     category: ComponentCategory.DATA_DISPLAY,
     description: '概览数据卡片组件，支持多种对比模式。',
     component: OverviewItemDemo,
@@ -594,6 +647,7 @@ const [value, setValue] = useState('basic');
   {
     id: 'error-boundary',
     name: 'ErrorBoundary',
+    cnName: '错误边界',
     category: ComponentCategory.BASIC,
     description: '错误边界组件，捕获子组件错误并显示降级UI。',
     component: ErrorBoundaryDemo,
@@ -610,6 +664,7 @@ const [value, setValue] = useState('basic');
   {
     id: 'table-data-summary',
     name: 'TableDataSummary',
+    cnName: '表格数据汇总',
     category: ComponentCategory.BASIC,
     description: '表格数据汇总组件，显示已选和总数。',
     component: TableDataSummaryDemo,
@@ -629,6 +684,7 @@ const [value, setValue] = useState('basic');
   {
     id: 'export-button',
     name: 'ExportButton',
+    cnName: '导出按钮',
     category: ComponentCategory.BASIC,
     description: '导出按钮组件。',
     component: ExportButtonDemo,
@@ -646,6 +702,7 @@ const [value, setValue] = useState('basic');
   {
     id: 'nav-button',
     name: 'NavButton',
+    cnName: '导航按钮',
     category: ComponentCategory.BASIC,
     description: '导航按钮组件，支持多种类型和下拉菜单。',
     component: NavButtonDemo,
@@ -664,6 +721,7 @@ const [value, setValue] = useState('basic');
   {
     id: 'modal-action-header',
     name: 'ModalActionHeader',
+    cnName: '弹窗操作头部',
     category: ComponentCategory.LAYOUT,
     description: '弹窗操作头部组件，支持自定义logo、标题和操作按钮。',
     component: ModalActionHeaderDemo,
@@ -686,6 +744,7 @@ const [value, setValue] = useState('basic');
   {
     id: 'simple-modal-header',
     name: 'SimpleModalHeader',
+    cnName: '简洁弹窗头部',
     category: ComponentCategory.LAYOUT,
     description: '简洁版弹窗头部组件。',
     component: SimpleModalHeaderDemo,
@@ -707,6 +766,7 @@ const [value, setValue] = useState('basic');
   {
     id: 'card-grid',
     name: 'CardGrid',
+    cnName: '卡片网格',
     category: ComponentCategory.LAYOUT,
     description: '卡片网格布局组件，用于展示工具、功能等卡片列表。',
     component: CardGridDemo,
@@ -729,6 +789,7 @@ const [value, setValue] = useState('basic');
   {
     id: 'filter-bar',
     name: 'FilterBar',
+    cnName: '筛选栏',
     category: ComponentCategory.FORM,
     description: '通用筛选栏组件，支持多种筛选控件组合。',
     component: FilterBarDemo,
@@ -759,6 +820,7 @@ const [value, setValue] = useState('basic');
   {
     id: 'date-type-selector',
     name: 'DateTypeSelector',
+    cnName: '日期类型选择器',
     category: ComponentCategory.FORM,
     description: '日期类型选择器组件。',
     component: DateTypeSelectorDemo,
@@ -778,26 +840,35 @@ const [value, setValue] = useState('day');
   {
     id: 'date-popover',
     name: 'DatePopover',
+    cnName: '日期弹出框',
     category: ComponentCategory.FORM,
-    description: '日期弹出选择器组件。',
+    description: '日期选择 Popover 组件，Hover 时展示日期选择面板。',
     component: DatePopoverDemo,
     propsDefinition: [
-      { name: 'date', description: '日期', type: 'Date', default: '-' },
-      { name: 'onChange', description: '变化回调', type: '(date: Date) => void', default: '-' },
-      { name: 'children', description: '触发器', type: 'ReactNode', default: '-' },
+      { name: 'type', description: 'Picker 类型', type: "'day' | 'week' | 'month'", default: '-' },
+      { name: 'value', description: '当前选中的日期', type: 'Dayjs | null', default: '-' },
+      { name: 'onChange', description: '日期变化回调', type: '(date: Dayjs | null) => void', default: '-' },
+      { name: 'visible', description: '是否显示 Popover', type: 'boolean', default: '-' },
+      { name: 'onVisibleChange', description: '显示状态变化回调', type: '(visible: boolean) => void', default: '-' },
+      { name: 'maxDateOffset', description: '最大可选日期偏移量', type: 'number', default: '1' },
+      { name: 'label', description: '自定义触发文本', type: 'string', default: "'日'/'周'/'月'" },
     ],
     codeSnippet: `import { DatePopover } from 'guanshu-component-library';
+import dayjs, { Dayjs } from 'dayjs';
+
+const [value, setValue] = useState<Dayjs | null>(null);
 
 <DatePopover
-  date={date}
-  onChange={setDate}
->
-  <button>选择日期</button>
-</DatePopover>`,
+  type="day"
+  value={value}
+  onChange={setValue}
+  label="选择日期"
+/>`,
   },
   {
     id: 'update-modal',
     name: 'UpdateModal',
+    cnName: '更新弹窗',
     category: ComponentCategory.FEEDBACK,
     description: '更新提示弹窗组件。',
     component: UpdateModalDemo,
@@ -817,27 +888,29 @@ const [value, setValue] = useState('day');
   {
     id: 'loading-progress',
     name: 'LoadingProgress',
+    cnName: '加载进度',
     category: ComponentCategory.FEEDBACK,
-    description: '加载进度组件。',
+    description: '加载进度条组件，支持多种状态显示。',
     component: LoadingProgressDemo,
     propsDefinition: [
-      { name: 'current', description: '当前值', type: 'number', default: '-' },
-      { name: 'total', description: '总数', type: 'number', default: '-' },
-      { name: 'status', description: '状态', type: 'string', default: '-' },
-      { name: 'text', description: '提示文本', type: 'string', default: '-' },
+      { name: 'percent', description: '进度百分比 (0-100)', type: 'number', default: '-' },
+      { name: 'status', description: '状态', type: "'loading' | 'completed' | 'error'", default: "'loading'" },
+      { name: 'showStatus', description: '是否显示状态标签', type: 'boolean', default: 'true' },
+      { name: 'statusText', description: '自定义状态文本', type: 'string', default: '-' },
+      { name: 'size', description: '尺寸', type: "'default' | 'small'", default: "'default'" },
     ],
     codeSnippet: `import { LoadingProgress } from 'guanshu-component-library';
 
 <LoadingProgress
-  current={50}
-  total={100}
+  percent={50}
   status="loading"
-  text="加载中..."
+  statusText="加载中..."
 />`,
   },
   {
     id: 'multi-step-progress',
     name: 'MultiStepProgress',
+    cnName: '多步骤进度',
     category: ComponentCategory.FEEDBACK,
     description: '多步骤进度组件，自动根据步骤状态计算进度。',
     component: MultiStepProgressDemo,
@@ -860,6 +933,7 @@ const [value, setValue] = useState('day');
   {
     id: 'auto-load-control',
     name: 'AutoLoadControl',
+    cnName: '自动加载控制',
     category: ComponentCategory.FEEDBACK,
     description: '自动加载控制组件。',
     component: AutoLoadControlDemo,
@@ -885,41 +959,53 @@ const [value, setValue] = useState('day');
   {
     id: 'export-progress-overlay',
     name: 'ExportProgressOverlay',
+    cnName: '导出进度遮罩',
     category: ComponentCategory.FEEDBACK,
-    description: '导出进度遮罩组件。',
+    description: '导出进度遮罩层组件，覆盖整个父容器，显示导出进度和取消按钮。',
     component: ExportProgressOverlayDemo,
     propsDefinition: [
-      { name: 'visible', description: '是否可见', type: 'boolean', default: '-' },
-      { name: 'progress', description: '进度百分比', type: 'number', default: '-' },
-      { name: 'status', description: '状态', type: 'string', default: '-' },
+      { name: 'progress', description: '进度信息，为 null 时不显示遮罩', type: 'ExportProgress | null', default: '-' },
       { name: 'onCancel', description: '取消回调', type: '() => void', default: '-' },
+      { name: 'showCancel', description: '是否显示取消按钮', type: 'boolean', default: 'true' },
+      { name: 'stageText', description: '自定义阶段文本', type: "Partial<Record<'downloading' | 'generating' | 'processing', string>>", default: '-' },
     ],
     codeSnippet: `import { ExportProgressOverlay } from 'guanshu-component-library';
 
+const [progress, setProgress] = useState<ExportProgress | null>(null);
+
+// 开始导出时
+setProgress({ stage: 'downloading', current: 0, total: 100 });
+
 <ExportProgressOverlay
-  visible={visible}
-  progress={65}
-  status="exporting"
-  onCancel={() => setVisible(false)}
+  progress={progress}
+  onCancel={() => setProgress(null)}
 />`,
   },
   {
     id: 'progress-status-panel',
     name: 'ProgressStatusPanel',
+    cnName: '进度状态面板',
     category: ComponentCategory.FEEDBACK,
-    description: '进度状态面板组件。',
+    description: '进度状态面板组件，用于展示多项任务的进度和状态。',
     component: ProgressStatusPanelDemo,
     propsDefinition: [
-      { name: 'status', description: '状态', type: 'string', default: '-' },
-      { name: 'progress', description: '进度', type: 'number', default: '-' },
-      { name: 'message', description: '消息', type: 'string', default: '-' },
+      { name: 'title', description: '标题', type: 'string', default: "'任务进度'" },
+      { name: 'current', description: '当前进度', type: 'number', default: '-' },
+      { name: 'total', description: '总数', type: 'number', default: '-' },
+      { name: 'statusItems', description: '状态项列表', type: 'StatusItem[]', default: '-' },
+      { name: 'visible', description: '是否可见', type: 'boolean', default: 'true' },
     ],
     codeSnippet: `import { ProgressStatusPanel } from 'guanshu-component-library';
 
 <ProgressStatusPanel
-  status="processing"
-  progress={75}
-  message="正在处理数据..."
+  title="任务进度"
+  current={3}
+  total={5}
+  statusItems={[
+    { key: '1', label: '准备数据', loading: false, completed: true },
+    { key: '2', label: '处理数据', loading: true, completed: false },
+    { key: '3', label: '生成报告', loading: false, completed: false },
+  ]}
 />`,
   },
 ];

@@ -1,3 +1,6 @@
+export { Button } from './Button';
+export type { ButtonProps } from './Button';
+
 export { DataItem } from './DataItem';
 export type { DataItemProps } from './DataItem';
 

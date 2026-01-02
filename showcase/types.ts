@@ -17,6 +17,7 @@ export interface PropDefinition {
 export interface ComponentInfo {
   id: string;
   name: string;
+  cnName: string;
   category: ComponentCategory;
   description: string;
   component: React.ComponentType<any>;

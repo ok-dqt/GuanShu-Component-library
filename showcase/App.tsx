@@ -3,7 +3,6 @@ import {
   MenuOutlined,
   CodeOutlined,
   PlayCircleOutlined,
-  AppstoreOutlined,
   RightOutlined,
   RocketOutlined,
   BgColorsOutlined,
@@ -55,7 +54,7 @@ const App = () => {
       title: category,
       items: COMPONENT_REGISTRY.filter((c) => c.category === category).map((comp) => ({
         id: comp.id,
-        name: comp.name,
+        name: comp.cnName,
         icon: null,
         type: 'component' as PageType,
         componentId: comp.id,
@@ -166,7 +165,7 @@ const App = () => {
 
   const getPageTitle = () => {
     if (currentNav?.type === 'component' && selectedComponent) {
-      return selectedComponent.name;
+      return selectedComponent.cnName;
     }
     return currentNav?.name || '';
   };
@@ -180,9 +179,9 @@ const App = () => {
         bg-white border-r border-gray-200 transition-all duration-300 flex flex-col z-20 overflow-hidden
       `}
       >
-        <div className="h-14 flex items-center px-6 border-b border-gray-100 flex-shrink-0">
-          <AppstoreOutlined className="w-6 h-6 text-blue-600 mr-2" style={{ fontSize: '24px' }} />
-          <span className="font-bold text-lg text-gray-900">观数组件库</span>
+        <div className="h-14 flex items-center px-4 border-b border-gray-100 flex-shrink-0">
+          <img src="/popup_logo.svg" alt="观数" className="h-8 mr-2" />
+          <span className="font-bold text-lg text-gray-900">组件库</span>
         </div>
 
         <div className="flex-1 overflow-y-auto py-4">
@@ -242,9 +241,12 @@ const App = () => {
             </button>
             <h1 className="text-xl font-medium text-gray-900">{getPageTitle()}</h1>
             {currentNav?.type === 'component' && selectedComponent && (
-              <span className="ml-4 px-2 py-0.5 text-xs bg-blue-100 text-blue-600 rounded">
-                {selectedComponent.category}
-              </span>
+              <>
+                <span className="ml-2 text-sm text-gray-400 font-mono">{selectedComponent.name}</span>
+                <span className="ml-4 px-2 py-0.5 text-xs bg-blue-100 text-blue-600 rounded">
+                  {selectedComponent.category}
+                </span>
+              </>
             )}
           </div>
           <a

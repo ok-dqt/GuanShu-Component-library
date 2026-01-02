@@ -1,10 +1,10 @@
 # 观数组件库
 
-观数浏览器扩展项目的 React 组件库，包含 31 个生产级组件。
+观数浏览器扩展项目的 React 组件库，包含 32 个生产级组件。
 
 ## 特性
 
-- 📦 **开箱即用** - 31 个高质量 React 组件
+- 📦 **开箱即用** - 32 个高质量 React 组件
 - 🎨 **统一设计** - 基于 Ant Design 5，使用观数品牌色 (#2563EB)
 - 🛡 **TypeScript** - 完整的类型定义
 - 📝 **在线文档** - Showcase 文档站，包含设计规范和组件示例
@@ -78,11 +78,11 @@ npm run build        # 构建 Showcase 文档
 npm run build:lib    # 构建组件库 (dist/)
 ```
 
-## 组件分类 (31个)
+## 组件分类 (32个)
 
 | 分类 | 组件数 | 组件 |
 |------|--------|------|
-| **基础组件** | 6 | DataItem, DateTypeSelector, ErrorBoundary, FilterBar, FilterTags, ModeTabs |
+| **基础组件** | 7 | Button, DataItem, DateTypeSelector, ErrorBoundary, FilterBar, FilterTags, ModeTabs |
 | **布局组件** | 3 | Header, ModalHeader, ToolGrid |
 | **数据展示** | 8 | CircleProgress, OverviewItem, RingProgress, SectionTitle, SkeletonCard, StatisticCard, TableDataSummary, TablePagination |
 | **表单组件** | 3 | AutoLoadControl, DatePopover, PaginationFooter |
