@@ -153,6 +153,8 @@ const PaginationFooterDemo = () => {
       loadedCount={50}
       cachedPages={[1, 2, 3, 4, 5]}
       onChange={setCurrent}
+      showTotal={false}
+      showLoadedInfo={false}
     />
   );
 };
@@ -924,38 +926,21 @@ const DataTableDemo = () => {
               loading={autoLoading}
             />
           </ResizablePreview>
-          {/* 底部控制栏：左侧自动加载控制，右侧分页器 */}
-          <div className="flex items-center justify-between border-t border-gray-200 pt-3 px-1">
-            {/* 左侧：加载状态信息 + 自动加载控制 */}
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-500 flex items-center gap-1.5">
-                <span className="inline-block w-1.5 h-1.5 bg-accent-500 rounded-full"></span>
-                已加载: {autoLoadData.length}/{totalPages * 10} 条数据
-              </span>
-              {/* 未全部加载完时显示自动加载控制 */}
-              {autoLoadData.length < totalPages * 10 && (
-                <AutoLoadControl
-                  isLoading={isAutoLoading}
-                  batchSize={batchSize}
-                  loadingProgress={loadingProgress}
-                  disableNextPage={currentPage >= totalPages}
-                  onBatchSizeChange={setBatchSize}
-                  onLoadNextPage={handleLoadNextPage}
-                  onStartAutoLoad={handleStartAutoLoad}
-                  onStopLoad={handleStopLoad}
-                />
-              )}
-            </div>
-            {/* 右侧：分页器 */}
-            <PaginationFooter
-              current={currentPage}
-              pageSize={10}
-              total={totalPages * 10}
-              loadedCount={autoLoadData.length}
-              cachedPages={cachedPages}
-              onChange={setCurrentPage}
-            />
-          </div>
+          {/* 底部控制栏 */}
+          <PaginationFooter
+            current={currentPage}
+            pageSize={10}
+            total={totalPages * 10}
+            loadedCount={autoLoadData.length}
+            cachedPages={cachedPages}
+            onChange={setCurrentPage}
+            showTotal={false}
+            isAutoLoading={isAutoLoading}
+            autoLoadProgress={loadingProgress}
+            onLoadNextPage={handleLoadNextPage}
+            onStartAutoLoad={handleStartAutoLoad}
+            onStopLoading={handleStopLoad}
+          />
         </div>
       )}
 
