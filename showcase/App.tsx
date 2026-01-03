@@ -33,7 +33,7 @@ interface NavGroup {
 
 const App = () => {
   const [selectedNavId, setSelectedNavId] = useState<string>('getting-started');
-  const [activeTab, setActiveTab] = useState<'preview' | 'code' | 'ai'>('preview');
+  const [activeTab, setActiveTab] = useState<'preview' | 'code'>('preview');
   const [copied, setCopied] = useState(false);
 
   // 复制代码
@@ -102,7 +102,7 @@ const App = () => {
       case 'component':
         if (!selectedComponent) return null;
         return (
-          <div className="space-y-8">
+          <div className="space-y-6">
             {/* Description */}
             <p className="text-gray-600 text-base leading-relaxed">
               {selectedComponent.description}
@@ -110,16 +110,16 @@ const App = () => {
 
             {/* Preview / Code Card */}
             <div className="rounded-xl border border-gray-200 overflow-hidden bg-white shadow-sm">
-              {/* Tab Bar */}
+              {/* Tab Bar - 分段器 */}
               <div className="border-b border-gray-200 px-4 py-3 flex items-center justify-between bg-gray-50">
-                <div className="flex gap-1 p-1 bg-white rounded-lg border border-gray-200">
+                <div className="flex p-0.5 bg-gray-100 rounded-lg">
                   <button
                     onClick={() => setActiveTab('preview')}
                     className={`
-                      px-4 py-2 rounded-md flex items-center gap-2 text-sm font-medium transition-all
+                      px-4 py-1.5 rounded-md flex items-center gap-2 text-sm font-medium transition-all
                       ${activeTab === 'preview'
-                        ? 'bg-accent-600 text-white shadow-sm'
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                        ? 'bg-white text-gray-900 shadow-sm'
+                        : 'text-gray-500 hover:text-gray-700'
                       }
                     `}
                   >
@@ -129,31 +129,16 @@ const App = () => {
                   <button
                     onClick={() => setActiveTab('code')}
                     className={`
-                      px-4 py-2 rounded-md flex items-center gap-2 text-sm font-medium transition-all
+                      px-4 py-1.5 rounded-md flex items-center gap-2 text-sm font-medium transition-all
                       ${activeTab === 'code'
-                        ? 'bg-accent-600 text-white shadow-sm'
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                        ? 'bg-white text-gray-900 shadow-sm'
+                        : 'text-gray-500 hover:text-gray-700'
                       }
                     `}
                   >
                     <CodeOutlined style={{ fontSize: '14px' }} />
                     代码
                   </button>
-                  {selectedComponent.aiGuidance && (
-                    <button
-                      onClick={() => setActiveTab('ai')}
-                      className={`
-                        px-4 py-2 rounded-md flex items-center gap-2 text-sm font-medium transition-all
-                        ${activeTab === 'ai'
-                          ? 'bg-accent-600 text-white shadow-sm'
-                          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                        }
-                      `}
-                    >
-                      <RobotOutlined style={{ fontSize: '14px' }} />
-                      AI 指南
-                    </button>
-                  )}
                 </div>
 
                 {activeTab === 'code' && (
@@ -174,7 +159,7 @@ const App = () => {
               {/* Content Area */}
               <div className="min-h-[320px]">
                 {activeTab === 'preview' && (
-                  <div className="preview-grid p-8 flex items-center justify-center min-h-[320px]">
+                  <div className="preview-grid p-6 flex items-center justify-center min-h-[320px]">
                     <div className="w-full flex justify-center">
                       <selectedComponent.component />
                     </div>
@@ -189,8 +174,18 @@ const App = () => {
                     </pre>
                   </div>
                 )}
-                {activeTab === 'ai' && selectedComponent.aiGuidance && (
-                  <div className="p-6 space-y-6 overflow-auto max-h-[600px]">
+              </div>
+            </div>
+
+            {/* AI 指南 - 独立模块 */}
+            {selectedComponent.aiGuidance && (
+              <div className="rounded-xl border border-gray-200 overflow-hidden bg-white shadow-sm">
+                <div className="px-6 py-4 border-b border-gray-200 bg-gray-50 flex items-center gap-2">
+                  <RobotOutlined style={{ fontSize: '16px' }} className="text-accent-600" />
+                  <h2 className="text-lg font-semibold text-gray-900">AI 指南</h2>
+                </div>
+                <div className="p-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* 适用场景 */}
                     <div>
                       <h3 className="text-sm font-semibold text-green-700 mb-3 flex items-center gap-2">
@@ -200,7 +195,7 @@ const App = () => {
                       <ul className="space-y-2">
                         {selectedComponent.aiGuidance.whenToUse.map((item, idx) => (
                           <li key={idx} className="text-sm text-gray-700 flex items-start gap-2">
-                            <span className="text-green-500 mt-1">✓</span>
+                            <span className="text-green-500 mt-0.5">✓</span>
                             {item}
                           </li>
                         ))}
@@ -217,7 +212,7 @@ const App = () => {
                         <ul className="space-y-2">
                           {selectedComponent.aiGuidance.whenNotToUse.map((item, idx) => (
                             <li key={idx} className="text-sm text-gray-700 flex items-start gap-2">
-                              <span className="text-red-500 mt-1">✗</span>
+                              <span className="text-red-500 mt-0.5">✗</span>
                               {item}
                             </li>
                           ))}
@@ -235,7 +230,7 @@ const App = () => {
                         <ul className="space-y-2">
                           {selectedComponent.aiGuidance.constraints.map((item, idx) => (
                             <li key={idx} className="text-sm text-gray-700 flex items-start gap-2">
-                              <span className="text-amber-500 mt-1">!</span>
+                              <span className="text-amber-500 mt-0.5">!</span>
                               <code className="text-xs bg-amber-50 text-amber-800 px-1 py-0.5 rounded">
                                 {item}
                               </code>
@@ -275,7 +270,7 @@ const App = () => {
                         <ul className="space-y-2">
                           {selectedComponent.aiGuidance.commonMistakes.map((item, idx) => (
                             <li key={idx} className="text-sm text-gray-700 flex items-start gap-2">
-                              <span className="text-orange-500 mt-1">⚠</span>
+                              <span className="text-orange-500 mt-0.5">⚠</span>
                               {item}
                             </li>
                           ))}
@@ -293,7 +288,7 @@ const App = () => {
                         <ul className="space-y-2">
                           {selectedComponent.aiGuidance.performanceTips.map((item, idx) => (
                             <li key={idx} className="text-sm text-gray-700 flex items-start gap-2">
-                              <span className="text-purple-500 mt-1">⚡</span>
+                              <span className="text-purple-500 mt-0.5">⚡</span>
                               {item}
                             </li>
                           ))}
@@ -301,9 +296,9 @@ const App = () => {
                       </div>
                     )}
                   </div>
-                )}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* API Table */}
             <div className="rounded-xl border border-gray-200 overflow-hidden bg-white shadow-sm">
@@ -463,7 +458,7 @@ const App = () => {
 
         {/* Content Area */}
         <main className="flex-1 overflow-auto">
-          <div className="max-w-5xl mx-auto px-8 py-10">
+          <div className="max-w-5xl mx-auto px-6 py-8">
             {renderContent()}
           </div>
         </main>

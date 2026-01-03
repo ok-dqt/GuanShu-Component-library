@@ -155,15 +155,13 @@
         background-color: #1d4ed8;
       }
 
-      /* 宽度拖拽手柄（右边缘中间） */
+      /* 宽度拖拽手柄（右边缘全高） */
       .resizable-preview__handle--width {
-        top: 50%;
+        top: 0;
         right: 0;
-        transform: translateY(-50%);
-        width: 8px;
-        height: 48px;
+        bottom: 0;
+        width: 12px;
         cursor: ew-resize;
-        border-radius: 4px 0 0 4px;
       }
 
       .resizable-preview__handle--width::before {
@@ -184,15 +182,13 @@
         background-color: #ffffff;
       }
 
-      /* 高度拖拽手柄（底边缘中间） */
+      /* 高度拖拽手柄（底边缘全宽） */
       .resizable-preview__handle--height {
         bottom: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 48px;
-        height: 8px;
+        left: 0;
+        right: 0;
+        height: 12px;
         cursor: ns-resize;
-        border-radius: 4px 4px 0 0;
       }
 
       .resizable-preview__handle--height::before {
