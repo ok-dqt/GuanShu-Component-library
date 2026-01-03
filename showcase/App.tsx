@@ -11,12 +11,13 @@ import {
   CopyOutlined,
   CheckOutlined,
   RobotOutlined,
+  FileTextOutlined,
 } from '@ant-design/icons';
 import { COMPONENT_REGISTRY } from './registry';
 import { ComponentCategory } from './types';
-import { GettingStarted, DesignColors, DesignTypography, DesignSpacing, DesignLogo } from './pages';
+import { GettingStarted, DeveloperGuide, DesignColors, DesignTypography, DesignSpacing, DesignLogo } from './pages';
 
-type PageType = 'getting-started' | 'colors' | 'typography' | 'spacing' | 'logo' | 'component';
+type PageType = 'getting-started' | 'developer-guide' | 'colors' | 'typography' | 'spacing' | 'logo' | 'component';
 
 interface NavItem {
   id: string;
@@ -49,6 +50,7 @@ const App = () => {
       title: '开始',
       items: [
         { id: 'getting-started', name: '快速开始', icon: <RocketOutlined />, type: 'getting-started' },
+        { id: 'developer-guide', name: '插件开发规范', icon: <FileTextOutlined />, type: 'developer-guide' },
       ],
     },
     {
@@ -91,6 +93,8 @@ const App = () => {
     switch (currentNav?.type) {
       case 'getting-started':
         return <GettingStarted />;
+      case 'developer-guide':
+        return <DeveloperGuide />;
       case 'colors':
         return <DesignColors />;
       case 'typography':
