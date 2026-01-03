@@ -114,6 +114,104 @@
         outline: 2px solid #3b82f6;
         outline-offset: 2px;
       }
+
+      /* ========== ResizablePreview 可拖拽预览容器 ========== */
+      .resizable-preview {
+        position: relative;
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        background: #ffffff;
+      }
+
+      .resizable-preview--resizing {
+        user-select: none;
+      }
+
+      /* 拖拽时显示全局遮罩 */
+      .resizable-preview--resizing::after {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 9999;
+      }
+
+      /* 拖拽手柄基础样式 */
+      .resizable-preview__handle {
+        position: absolute;
+        background-color: transparent;
+        transition: background-color 0.2s ease;
+        z-index: 10;
+      }
+
+      .resizable-preview__handle:hover {
+        background-color: #2563eb;
+      }
+
+      .resizable-preview__handle:active {
+        background-color: #1d4ed8;
+      }
+
+      /* 宽度拖拽手柄（右边缘中间） */
+      .resizable-preview__handle--width {
+        top: 50%;
+        right: 0;
+        transform: translateY(-50%);
+        width: 8px;
+        height: 48px;
+        cursor: ew-resize;
+        border-radius: 4px 0 0 4px;
+      }
+
+      .resizable-preview__handle--width::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 2px;
+        height: 20px;
+        background-color: #a1a1aa;
+        border-radius: 1px;
+        transition: background-color 0.2s ease;
+      }
+
+      .resizable-preview__handle--width:hover::before,
+      .resizable-preview__handle--width:active::before {
+        background-color: #ffffff;
+      }
+
+      /* 高度拖拽手柄（底边缘中间） */
+      .resizable-preview__handle--height {
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 48px;
+        height: 8px;
+        cursor: ns-resize;
+        border-radius: 4px 4px 0 0;
+      }
+
+      .resizable-preview__handle--height::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 20px;
+        height: 2px;
+        background-color: #a1a1aa;
+        border-radius: 1px;
+        transition: background-color 0.2s ease;
+      }
+
+      .resizable-preview__handle--height:hover::before,
+      .resizable-preview__handle--height:active::before {
+        background-color: #ffffff;
+      }
     </style>
   </head>
   <body>

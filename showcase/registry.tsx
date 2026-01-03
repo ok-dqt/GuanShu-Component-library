@@ -44,6 +44,9 @@ import { DataTable } from '../src/business/DataTable';
 import type { DataTableColumn } from '../src/business/DataTable';
 import { Tag } from 'antd';
 
+// 导入 showcase 组件
+import { ResizablePreview } from './components/ResizablePreview';
+
 // Demo 组件
 const StatisticCardDemo = () => (
   <StatisticCard
@@ -738,21 +741,28 @@ const DataTableDemo = () => {
             <code className="text-accent-600">loadMode="pagination"</code> +{' '}
             <code className="text-accent-600">columnLayout="auto"</code> +{' '}
             <code className="text-accent-600">bordered</code>
+            <span className="ml-2 text-gray-400">| 拖拽边缘调整容器尺寸</span>
           </p>
-          <DataTable
-            columns={fixedWidthColumns}
-            dataSource={generateTableMockData(20)}
-            columnLayout="auto"
-            loadMode="pagination"
-            heightMode="fixed"
-            height={320}
-            bordered
-            pagination={{
-              pageSize: 5,
-              showSizeChanger: true,
-              showTotal: (total) => `共 ${total} 条`,
-            }}
-          />
+          <ResizablePreview
+            defaultWidth="100%"
+            defaultHeight={400}
+            minWidth={400}
+            minHeight={200}
+          >
+            <DataTable
+              columns={fixedWidthColumns}
+              dataSource={generateTableMockData(20)}
+              columnLayout="auto"
+              loadMode="pagination"
+              heightMode="auto"
+              bordered
+              pagination={{
+                pageSize: 5,
+                showSizeChanger: true,
+                showTotal: (total) => `共 ${total} 条`,
+              }}
+            />
+          </ResizablePreview>
         </div>
       )}
 
@@ -761,18 +771,25 @@ const DataTableDemo = () => {
         <div>
           <p className="text-sm text-gray-500 mb-3">
             <code className="text-accent-600">loadMode="scroll"</code> - 滚动到底部自动加载更多
+            <span className="ml-2 text-gray-400">| 拖拽边缘调整容器尺寸</span>
           </p>
-          <DataTable
-            columns={fixedWidthColumns}
-            dataSource={scrollData}
-            loadMode="scroll"
-            heightMode="fixed"
-            height={320}
-            bordered
-            hasMore={hasMore}
-            onLoadMore={handleLoadMore}
-            loading={scrollLoading}
-          />
+          <ResizablePreview
+            defaultWidth="100%"
+            defaultHeight={400}
+            minWidth={400}
+            minHeight={200}
+          >
+            <DataTable
+              columns={fixedWidthColumns}
+              dataSource={scrollData}
+              loadMode="scroll"
+              heightMode="auto"
+              bordered
+              hasMore={hasMore}
+              onLoadMore={handleLoadMore}
+              loading={scrollLoading}
+            />
+          </ResizablePreview>
         </div>
       )}
 
@@ -782,18 +799,25 @@ const DataTableDemo = () => {
           <p className="text-sm text-gray-500">
             结合 <code className="text-accent-600">AutoLoadControl</code> 和{' '}
             <code className="text-accent-600">PaginationFooter</code> 实现自动批量加载
+            <span className="ml-2 text-gray-400">| 拖拽边缘调整容器尺寸</span>
           </p>
-          <DataTable
-            columns={fixedWidthColumns}
-            dataSource={autoLoadData}
-            columnLayout="auto"
-            loadMode="pagination"
-            heightMode="fixed"
-            height={280}
-            bordered
-            pagination={false}
-            loading={autoLoading}
-          />
+          <ResizablePreview
+            defaultWidth="100%"
+            defaultHeight={350}
+            minWidth={400}
+            minHeight={200}
+          >
+            <DataTable
+              columns={fixedWidthColumns}
+              dataSource={autoLoadData}
+              columnLayout="auto"
+              loadMode="pagination"
+              heightMode="auto"
+              bordered
+              pagination={false}
+              loading={autoLoading}
+            />
+          </ResizablePreview>
           <div className="flex items-center justify-between border-t pt-3">
             <PaginationFooter
               current={currentPage}
@@ -820,15 +844,24 @@ const DataTableDemo = () => {
         <div>
           <p className="text-sm text-gray-500 mb-3">
             <code className="text-accent-600">columnLayout="flex"</code> - 列宽自动平均分配
+            <span className="ml-2 text-gray-400">| 拖拽边缘调整容器尺寸</span>
           </p>
-          <DataTable
-            columns={flexWidthColumns}
-            dataSource={generateTableMockData(8)}
-            columnLayout="flex"
-            loadMode="pagination"
-            bordered
-            pagination={false}
-          />
+          <ResizablePreview
+            defaultWidth="100%"
+            defaultHeight={350}
+            minWidth={400}
+            minHeight={200}
+          >
+            <DataTable
+              columns={flexWidthColumns}
+              dataSource={generateTableMockData(8)}
+              columnLayout="flex"
+              loadMode="pagination"
+              heightMode="auto"
+              bordered
+              pagination={false}
+            />
+          </ResizablePreview>
         </div>
       )}
 
@@ -837,17 +870,24 @@ const DataTableDemo = () => {
         <div>
           <p className="text-sm text-gray-500 mb-3">
             结合 <code className="text-accent-600">MediaPreview</code> 组件展示图片和视频
+            <span className="ml-2 text-gray-400">| 拖拽边缘调整容器尺寸</span>
           </p>
-          <DataTable
-            columns={mediaColumns}
-            dataSource={generateTableMockData(6)}
-            columnLayout="auto"
-            loadMode="pagination"
-            heightMode="fixed"
-            height={320}
-            bordered
-            pagination={false}
-          />
+          <ResizablePreview
+            defaultWidth="100%"
+            defaultHeight={400}
+            minWidth={400}
+            minHeight={200}
+          >
+            <DataTable
+              columns={mediaColumns}
+              dataSource={generateTableMockData(6)}
+              columnLayout="auto"
+              loadMode="pagination"
+              heightMode="auto"
+              bordered
+              pagination={false}
+            />
+          </ResizablePreview>
         </div>
       )}
 
@@ -858,21 +898,28 @@ const DataTableDemo = () => {
             <code className="text-accent-600">rowClassName</code> 条件高亮 +{' '}
             <code className="text-accent-600">ellipsis</code> 文本省略 +{' '}
             <code className="text-accent-600">size="small"</code>
+            <span className="ml-2 text-gray-400">| 拖拽边缘调整容器尺寸</span>
           </p>
-          <DataTable
-            columns={ellipsisColumns}
-            dataSource={generateDescMockData(10)}
-            columnLayout="auto"
-            loadMode="pagination"
-            heightMode="fixed"
-            height={300}
-            bordered
-            size="small"
-            pagination={false}
-            rowClassName={(record: any) =>
-              record.status === 'active' ? 'bg-green-50' : ''
-            }
-          />
+          <ResizablePreview
+            defaultWidth="100%"
+            defaultHeight={380}
+            minWidth={400}
+            minHeight={200}
+          >
+            <DataTable
+              columns={ellipsisColumns}
+              dataSource={generateDescMockData(10)}
+              columnLayout="auto"
+              loadMode="pagination"
+              heightMode="auto"
+              bordered
+              size="small"
+              pagination={false}
+              rowClassName={(record: any) =>
+                record.status === 'active' ? 'bg-green-50' : ''
+              }
+            />
+          </ResizablePreview>
         </div>
       )}
 
@@ -881,19 +928,28 @@ const DataTableDemo = () => {
         <div>
           <p className="text-sm text-gray-500 mb-3">
             <code className="text-accent-600">expandable</code> 树形表格，支持展开/收起
+            <span className="ml-2 text-gray-400">| 拖拽边缘调整容器尺寸</span>
           </p>
-          <DataTable
-            columns={groupedColumns.filter((c) => !c.children)}
-            dataSource={treeData}
-            columnLayout="auto"
-            loadMode="pagination"
-            bordered
-            pagination={false}
-            expandable={{
-              defaultExpandAllRows: true,
-              childrenColumnName: 'children',
-            }}
-          />
+          <ResizablePreview
+            defaultWidth="100%"
+            defaultHeight={300}
+            minWidth={400}
+            minHeight={150}
+          >
+            <DataTable
+              columns={groupedColumns.filter((c) => !c.children)}
+              dataSource={treeData}
+              columnLayout="auto"
+              loadMode="pagination"
+              heightMode="auto"
+              bordered
+              pagination={false}
+              expandable={{
+                defaultExpandAllRows: true,
+                childrenColumnName: 'children',
+              }}
+            />
+          </ResizablePreview>
         </div>
       )}
 
@@ -902,18 +958,27 @@ const DataTableDemo = () => {
         <div>
           <p className="text-sm text-gray-500 mb-3">
             <code className="text-accent-600">children</code> 配置多级表头（分组列头）
+            <span className="ml-2 text-gray-400">| 拖拽边缘调整容器尺寸</span>
           </p>
-          <DataTable
-            columns={groupedColumns}
-            dataSource={treeData.flatMap((item) => [
-              { ...item, children: undefined },
-              ...(item.children || []),
-            ])}
-            columnLayout="auto"
-            loadMode="pagination"
-            bordered
-            pagination={false}
-          />
+          <ResizablePreview
+            defaultWidth="100%"
+            defaultHeight={300}
+            minWidth={400}
+            minHeight={150}
+          >
+            <DataTable
+              columns={groupedColumns}
+              dataSource={treeData.flatMap((item) => [
+                { ...item, children: undefined },
+                ...(item.children || []),
+              ])}
+              columnLayout="auto"
+              loadMode="pagination"
+              heightMode="auto"
+              bordered
+              pagination={false}
+            />
+          </ResizablePreview>
         </div>
       )}
     </div>
