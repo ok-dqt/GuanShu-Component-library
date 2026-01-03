@@ -136,6 +136,46 @@ export default () => {
           />
         </div>
       </Card>
+
+      {/* 示例5: 可拖拽容器 */}
+      <Card size="small" title="可拖拽容器">
+        <Text type="secondary" style={{ display: 'block', marginBottom: 12 }}>
+          resizable=true | 拖拽右边缘调整宽度，拖拽底边缘调整高度
+        </Text>
+        <DataTable
+          columns={columns}
+          dataSource={generateMockData(20)}
+          resizable
+          resizeConfig={{
+            defaultWidth: 600,
+            defaultHeight: 300,
+            minWidth: 400,
+            maxWidth: 1000,
+            minHeight: 200,
+            maxHeight: 500,
+            onResize: (size) => console.log('尺寸变化:', size),
+          }}
+          loadMode="pagination"
+          pagination={false}
+        />
+      </Card>
+
+      {/* 示例6: 禁用自动列宽 */}
+      <Card size="small" title="禁用自动列宽">
+        <Text type="secondary" style={{ display: 'block', marginBottom: 12 }}>
+          autoColumnWidth=false | 列宽受容器宽度约束，不会无限延伸
+        </Text>
+        <div style={{ width: 500, border: '1px dashed #d9d9d9' }}>
+          <DataTable
+            columns={columns}
+            dataSource={generateMockData(5)}
+            columnLayout="auto"
+            autoColumnWidth={false}
+            loadMode="pagination"
+            pagination={false}
+          />
+        </div>
+      </Card>
     </Space>
   );
 };

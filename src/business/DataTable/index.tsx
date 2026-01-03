@@ -2,6 +2,7 @@ import React, { useRef, useCallback, useEffect, useState } from 'react';
 import { Table, Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import type { TableProps, ColumnsType } from 'antd/es/table';
+import { useResize, type UseResizeOptions } from './useResize';
 import './index.less';
 
 /** 列布局模式 */
@@ -42,6 +43,28 @@ export interface DataTableColumn<T = any> {
   onHeaderCell?: () => React.HTMLAttributes<HTMLElement>;
 }
 
+/** 可拖拽配置 */
+export interface ResizeConfig {
+  /** 是否允许拖拽宽度 @default true */
+  enableWidth?: boolean;
+  /** 是否允许拖拽高度 @default true */
+  enableHeight?: boolean;
+  /** 最小宽度（像素） @default 200 */
+  minWidth?: number;
+  /** 最大宽度（像素） */
+  maxWidth?: number;
+  /** 最小高度（像素） @default 150 */
+  minHeight?: number;
+  /** 最大高度（像素） */
+  maxHeight?: number;
+  /** 初始宽度（像素或百分比） @default '100%' */
+  defaultWidth?: number | string;
+  /** 初始高度（像素） @default 400 */
+  defaultHeight?: number;
+  /** 尺寸变化回调 */
+  onResize?: (size: { width: number; height: number }) => void;
+}
+
 export interface DataTableProps<T = any> {
   /** 列配置 */
   columns: DataTableColumn<T>[];
@@ -53,6 +76,24 @@ export interface DataTableProps<T = any> {
   // ========== 列布局配置 ==========
   /** 列布局模式：'auto' 按 width 配置 | 'flex' 平均分布 */
   columnLayout?: ColumnLayout;
+  /**
+   * 是否启用自动列宽（columnLayout='auto' 时生效）
+   * - true: 列宽按内容自动撑开（scroll.x = 'max-content'）
+   * - false: 列宽受容器宽度约束
+   * @default true
+   */
+  autoColumnWidth?: boolean;
+
+  // ========== 可拖拽容器配置 ==========
+  /**
+   * 是否启用可拖拽容器
+   * @default false
+   */
+  resizable?: boolean;
+  /**
+   * 可拖拽配置（resizable=true 时生效）
+   */
+  resizeConfig?: ResizeConfig;
 
   // ========== 加载模式配置 ==========
   /** 加载模式：'pagination' 分页加载 | 'scroll' 无限滚动 */
@@ -112,6 +153,10 @@ export const DataTable = <T extends object = any>({
   rowKey = 'key',
   // 列布局
   columnLayout = 'auto',
+  autoColumnWidth = true,
+  // 可拖拽容器
+  resizable = false,
+  resizeConfig,
   // 加载模式
   loadMode = 'pagination',
   pagination = {
@@ -142,6 +187,24 @@ export const DataTable = <T extends object = any>({
 }: DataTableProps<T>) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+
+  // 可拖拽容器 Hook
+  const resizeOptions: UseResizeOptions | null = resizable
+    ? {
+        defaultWidth: resizeConfig?.defaultWidth ?? '100%',
+        defaultHeight:
+          resizeConfig?.defaultHeight ??
+          (heightMode === 'fixed' && typeof height === 'number' ? height : 400),
+        minWidth: resizeConfig?.minWidth ?? 200,
+        maxWidth: resizeConfig?.maxWidth,
+        minHeight: resizeConfig?.minHeight ?? 150,
+        maxHeight: resizeConfig?.maxHeight,
+        onResize: resizeConfig?.onResize,
+      }
+    : null;
+
+  const resize = useResize(resizeOptions ?? { defaultWidth: 0, defaultHeight: 0 });
+  const isResizeEnabled = resizable && resize.width > 0;
 
   // 递归转换列配置（支持多层级列头）
   const convertColumn = (col: DataTableColumn<T>): any => ({
@@ -201,11 +264,15 @@ export const DataTable = <T extends object = any>({
     if (scrollX !== undefined) {
       scroll.x = scrollX;
     } else if (columnLayout === 'auto') {
-      scroll.x = 'max-content';
+      // 根据 autoColumnWidth 决定列宽行为
+      scroll.x = autoColumnWidth ? 'max-content' : '100%';
     }
 
     // 垂直滚动
-    if (heightMode === 'fixed' && height) {
+    if (isResizeEnabled) {
+      // 启用拖拽时，使用拖拽高度
+      scroll.y = resize.height - 55; // 减去表头高度
+    } else if (heightMode === 'fixed' && height) {
       scroll.y = height;
     } else if (heightMode === 'auto') {
       scroll.y = '100%';
@@ -220,10 +287,47 @@ export const DataTable = <T extends object = any>({
     heightMode === 'auto' && 'data-table__container--height-auto',
     heightMode === 'fixed' && 'data-table__container--height-fixed',
     columnLayout === 'flex' && 'data-table--column-flex',
+    isResizeEnabled && 'data-table__container--resizable',
+    resize.isResizing && 'data-table__container--resizing',
     className,
   ]
     .filter(Boolean)
     .join(' ');
+
+  // 容器样式
+  const containerStyle: React.CSSProperties = {
+    ...style,
+    ...(isResizeEnabled
+      ? {
+          width: resize.width,
+          height: resize.height,
+        }
+      : {}),
+  };
+
+  // 渲染拖拽手柄
+  const renderResizeHandles = () => {
+    if (!isResizeEnabled) return null;
+
+    const { enableWidth = true, enableHeight = true } = resizeConfig || {};
+
+    return (
+      <>
+        {enableWidth && (
+          <div
+            className="data-table__resize-handle data-table__resize-handle--width"
+            {...resize.widthHandleProps}
+          />
+        )}
+        {enableHeight && (
+          <div
+            className="data-table__resize-handle data-table__resize-handle--height"
+            {...resize.heightHandleProps}
+          />
+        )}
+      </>
+    );
+  };
 
   // 渲染滚动加载底部
   const renderScrollFooter = () => {
@@ -254,7 +358,11 @@ export const DataTable = <T extends object = any>({
   };
 
   return (
-    <div ref={containerRef} className={containerClassName} style={style}>
+    <div
+      ref={isResizeEnabled ? resize.containerRef : containerRef}
+      className={containerClassName}
+      style={containerStyle}
+    >
       <Table<T>
         columns={antdColumns}
         dataSource={dataSource}
@@ -274,6 +382,7 @@ export const DataTable = <T extends object = any>({
         title={title}
         summary={summary}
       />
+      {renderResizeHandles()}
     </div>
   );
 };
