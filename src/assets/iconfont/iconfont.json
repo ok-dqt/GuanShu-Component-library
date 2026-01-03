@@ -1,0 +1,107 @@
+{
+  "id": "5070581",
+  "name": "观数插件图标库",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "46389492",
+      "name": "tianmao",
+      "font_class": "tianmao",
+      "unicode": "e626",
+      "unicode_decimal": 58918
+    },
+    {
+      "icon_id": "46271941",
+      "name": "calendar",
+      "font_class": "calendar",
+      "unicode": "e625",
+      "unicode_decimal": 58917
+    },
+    {
+      "icon_id": "46200676",
+      "name": "查询",
+      "font_class": "chaxun",
+      "unicode": "e621",
+      "unicode_decimal": 58913
+    },
+    {
+      "icon_id": "46185162",
+      "name": "close",
+      "font_class": "close",
+      "unicode": "e620",
+      "unicode_decimal": 58912
+    },
+    {
+      "icon_id": "46176130",
+      "name": "横幅_置顶_生效",
+      "font_class": "hengfu_zhiding_shengxiao",
+      "unicode": "e61e",
+      "unicode_decimal": 58910
+    },
+    {
+      "icon_id": "46142997",
+      "name": "GuanShu",
+      "font_class": "GuanShu",
+      "unicode": "e61d",
+      "unicode_decimal": 58909
+    },
+    {
+      "icon_id": "46142952",
+      "name": "反馈",
+      "font_class": "fankui",
+      "unicode": "e61b",
+      "unicode_decimal": 58907
+    },
+    {
+      "icon_id": "46142951",
+      "name": "横幅_置顶",
+      "font_class": "hengfu_zhiding",
+      "unicode": "e61c",
+      "unicode_decimal": 58908
+    },
+    {
+      "icon_id": "46142945",
+      "name": "横幅_个人中心",
+      "font_class": "hengfu_gerenzhongxin",
+      "unicode": "e615",
+      "unicode_decimal": 58901
+    },
+    {
+      "icon_id": "46142946",
+      "name": "成功",
+      "font_class": "chenggong",
+      "unicode": "e616",
+      "unicode_decimal": 58902
+    },
+    {
+      "icon_id": "46142947",
+      "name": "横幅_清除缓存",
+      "font_class": "hengfu_qingchuhuancun",
+      "unicode": "e617",
+      "unicode_decimal": 58903
+    },
+    {
+      "icon_id": "46142948",
+      "name": "info",
+      "font_class": "info",
+      "unicode": "e618",
+      "unicode_decimal": 58904
+    },
+    {
+      "icon_id": "46142949",
+      "name": "自动加载",
+      "font_class": "zidongjiazai",
+      "unicode": "e619",
+      "unicode_decimal": 58905
+    },
+    {
+      "icon_id": "46142950",
+      "name": "下拉三角",
+      "font_class": "xialasanjiao",
+      "unicode": "e61a",
+      "unicode_decimal": 58906
+    }
+  ]
+}

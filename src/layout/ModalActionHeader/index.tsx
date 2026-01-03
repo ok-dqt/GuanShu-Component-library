@@ -42,7 +42,7 @@ export const ModalActionHeader: React.FC<ModalActionHeaderProps> = ({
   const renderIcon = (icon: React.ReactNode | string) => {
     if (typeof icon === 'string') {
       // 如果是字符串，当作iconfont类名使用
-      return <span className={icon} />;
+      return <i className={`iconfont ${icon}`} />;
     }
     return icon;
   };

@@ -1,10 +1,5 @@
 import React from 'react';
 import { Divider, message } from 'antd';
-import {
-  ClearOutlined,
-  UserOutlined,
-  MessageOutlined,
-} from '@ant-design/icons';
 import './index.less';
 
 export interface SimpleModalHeaderProps {
@@ -59,7 +54,7 @@ export const SimpleModalHeader: React.FC<SimpleModalHeaderProps> = ({
           {onClearCache && (
             <>
               <div className="modal-header-action" onClick={handleClearCache}>
-                <ClearOutlined />
+                <i className="iconfont icon-hengfu_qingchuhuancun" />
                 <span>清除缓存</span>
               </div>
               <Divider type="vertical" />
@@ -69,7 +64,7 @@ export const SimpleModalHeader: React.FC<SimpleModalHeaderProps> = ({
           {onUserCenter && (
             <>
               <div className="modal-header-action" onClick={handleUserCenter}>
-                <UserOutlined />
+                <i className="iconfont icon-hengfu_gerenzhongxin" />
                 <span>个人中心</span>
               </div>
               <Divider type="vertical" />
@@ -79,7 +74,7 @@ export const SimpleModalHeader: React.FC<SimpleModalHeaderProps> = ({
           {onFeedback && (
             <>
               <div className="modal-header-action" onClick={handleFeedback}>
-                <MessageOutlined />
+                <i className="iconfont icon-fankui" />
                 <span>反馈</span>
               </div>
               {customBtn && <Divider type="vertical" />}

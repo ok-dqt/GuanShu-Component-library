@@ -44,6 +44,12 @@ import { DataTable } from '../src/business/DataTable';
 import type { DataTableColumn } from '../src/business/DataTable';
 import { Tag, Modal } from 'antd';
 
+// 导入品牌资源
+import { logoSvg } from '../src/brand/Logo';
+
+// 导入 iconfont 样式
+import '../src/assets/iconfont/iconfont.css';
+
 // 导入 showcase 组件
 import { ResizablePreview } from './components/ResizablePreview';
 
@@ -207,10 +213,25 @@ const NavButtonDemo = () => (
   </div>
 );
 
+// Logo 组件 - 包含 Logo 图片 + GuanShu 图标
+const GuanShuLogo = () => (
+  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+    <img src={logoSvg} alt="logo" style={{ width: 24, height: 24 }} />
+    <i className="iconfont icon-GuanShu" style={{ fontSize: 16 }} />
+  </div>
+);
+
 // 弹窗表头组合 Demo - 支持切换两种表头样式
 const ModalHeaderDemo = () => {
   const [open, setOpen] = React.useState(false);
   const [headerType, setHeaderType] = React.useState<'action' | 'simple'>('action');
+
+  // ModalActionHeader 使用的操作按钮配置（使用 iconfont 图标）
+  const actionItems = [
+    { key: 'clearCache', icon: 'icon-hengfu_qingchuhuancun', text: '清除缓存', onClick: () => alert('清除缓存') },
+    { key: 'userCenter', icon: 'icon-hengfu_gerenzhongxin', text: '个人中心', onClick: () => alert('个人中心') },
+    { key: 'feedback', icon: 'icon-fankui', text: '反馈', onClick: () => alert('反馈') },
+  ];
 
   return (
     <div className="space-y-4">
@@ -252,14 +273,13 @@ const ModalHeaderDemo = () => {
         {headerType === 'action' ? (
           <ModalActionHeader
             title="数据分析"
-            actions={[
-              { key: 'refresh', text: '刷新', onClick: () => alert('刷新') },
-              { key: 'export', text: '导出', onClick: () => alert('导出') },
-            ]}
+            logo={<GuanShuLogo />}
+            actions={actionItems}
           />
         ) : (
           <SimpleModalHeader
             title="弹窗标题"
+            logo={<GuanShuLogo />}
             onFeedback={() => alert('反馈')}
             onUserCenter={() => alert('个人中心')}
           />
@@ -282,15 +302,16 @@ const ModalHeaderDemo = () => {
         {headerType === 'action' ? (
           <ModalActionHeader
             title="数据分析"
+            logo={<GuanShuLogo />}
             actions={[
-              { key: 'refresh', text: '刷新', onClick: () => alert('刷新') },
-              { key: 'export', text: '导出', onClick: () => alert('导出') },
-              { key: 'close', text: '关闭', onClick: () => setOpen(false) },
+              ...actionItems,
+              { key: 'close', icon: 'icon-close', text: '关闭', onClick: () => setOpen(false) },
             ]}
           />
         ) : (
           <SimpleModalHeader
             title="弹窗标题"
+            logo={<GuanShuLogo />}
             onFeedback={() => alert('反馈')}
             onUserCenter={() => alert('个人中心')}
             onClearCache={() => alert('清除缓存')}
@@ -305,7 +326,7 @@ const ModalHeaderDemo = () => {
             组件作为表头。
           </p>
           <div className="bg-gray-50 rounded-lg p-4 text-sm text-gray-500">
-            <p>• ModalActionHeader：适用于需要多个操作按钮的场景</p>
+            <p>• ModalActionHeader：适用于需要多个操作按钮的场景，使用 iconfont 图标</p>
             <p>• SimpleModalHeader：适用于简洁展示，内置反馈/个人中心入口</p>
           </div>
         </div>
@@ -1462,12 +1483,24 @@ const [value, setValue] = useState('basic');
       { name: 'showSeparator', description: '显示分隔符', type: 'boolean', default: 'true' },
     ],
     codeSnippet: `import { ModalActionHeader } from 'guanshu-component-library';
+import { logoSvg } from 'guanshu-component-library';
+import 'guanshu-component-library/style';  // 包含 iconfont
+
+// Logo 组件
+const GuanShuLogo = () => (
+  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+    <img src={logoSvg} alt="logo" style={{ width: 24, height: 24 }} />
+    <i className="iconfont icon-GuanShu" />
+  </div>
+);
 
 <ModalActionHeader
   title="数据分析"
+  logo={<GuanShuLogo />}
   actions={[
-    { key: 'refresh', text: '刷新', onClick: () => {} },
-    { key: 'export', text: '导出', onClick: () => {} },
+    { key: 'clearCache', icon: 'icon-hengfu_qingchuhuancun', text: '清除缓存', onClick: () => {} },
+    { key: 'userCenter', icon: 'icon-hengfu_gerenzhongxin', text: '个人中心', onClick: () => {} },
+    { key: 'feedback', icon: 'icon-fankui', text: '反馈', onClick: () => {} },
   ]}
 />`,
     aiGuidance: {
@@ -1513,11 +1546,23 @@ const [value, setValue] = useState('basic');
       { name: 'onFeedback', description: '反馈回调', type: '() => void', default: '-' },
     ],
     codeSnippet: `import { SimpleModalHeader } from 'guanshu-component-library';
+import { logoSvg } from 'guanshu-component-library';
+import 'guanshu-component-library/style';  // 包含 iconfont
+
+// Logo 组件
+const GuanShuLogo = () => (
+  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+    <img src={logoSvg} alt="logo" style={{ width: 24, height: 24 }} />
+    <i className="iconfont icon-GuanShu" />
+  </div>
+);
 
 <SimpleModalHeader
   title="弹窗标题"
-  onFeedback={() => console.log('反馈')}
+  logo={<GuanShuLogo />}
+  onClearCache={() => console.log('清除缓存')}
   onUserCenter={() => console.log('个人中心')}
+  onFeedback={() => console.log('反馈')}
 />`,
     aiGuidance: {
       whenToUse: [
