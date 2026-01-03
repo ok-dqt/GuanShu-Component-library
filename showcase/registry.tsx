@@ -671,15 +671,31 @@ const DataTableDemo = () => {
 
   // 自动批量加载
   const [isAutoLoading, setIsAutoLoading] = React.useState(false);
+  const [loadingProgress, setLoadingProgress] = React.useState<{
+    currentPage: number;
+    totalPages: number;
+    percentage: number;
+  } | undefined>(undefined);
   const autoLoadRef = React.useRef<NodeJS.Timeout | null>(null);
 
   const handleStartAutoLoad = React.useCallback(() => {
     setIsAutoLoading(true);
+    const totalToLoad = Math.min(batchSize, totalPages - currentPage);
+
     const loadBatch = (remaining: number) => {
       if (remaining <= 0 || currentPage >= totalPages) {
         setIsAutoLoading(false);
+        setLoadingProgress(undefined);
         return;
       }
+
+      const currentIndex = totalToLoad - remaining + 1;
+      setLoadingProgress({
+        currentPage: currentIndex,
+        totalPages: totalToLoad,
+        percentage: Math.round((currentIndex / totalToLoad) * 100),
+      });
+
       setAutoLoading(true);
       autoLoadRef.current = setTimeout(() => {
         const nextPage = currentPage + (batchSize - remaining + 1);
@@ -693,12 +709,13 @@ const DataTableDemo = () => {
         loadBatch(remaining - 1);
       }, 500);
     };
-    loadBatch(batchSize);
+    loadBatch(totalToLoad);
   }, [batchSize, currentPage, autoLoadData.length]);
 
   const handleStopLoad = React.useCallback(() => {
     setIsAutoLoading(false);
     setAutoLoading(false);
+    setLoadingProgress(undefined);
     if (autoLoadRef.current) {
       clearTimeout(autoLoadRef.current);
     }
@@ -818,7 +835,29 @@ const DataTableDemo = () => {
               loading={autoLoading}
             />
           </ResizablePreview>
-          <div className="flex items-center justify-between border-t pt-3">
+          {/* 底部控制栏：左侧自动加载控制，右侧分页器 */}
+          <div className="flex items-center justify-between border-t border-gray-200 pt-3 px-1">
+            {/* 左侧：加载状态信息 + 自动加载控制 */}
+            <div className="flex items-center gap-4">
+              <span className="text-sm text-gray-500 flex items-center gap-1.5">
+                <span className="inline-block w-1.5 h-1.5 bg-accent-500 rounded-full"></span>
+                已加载: {autoLoadData.length}/{totalPages * 10} 条数据
+              </span>
+              {/* 未全部加载完时显示自动加载控制 */}
+              {autoLoadData.length < totalPages * 10 && (
+                <AutoLoadControl
+                  isLoading={isAutoLoading}
+                  batchSize={batchSize}
+                  loadingProgress={loadingProgress}
+                  disableNextPage={currentPage >= totalPages}
+                  onBatchSizeChange={setBatchSize}
+                  onLoadNextPage={handleLoadNextPage}
+                  onStartAutoLoad={handleStartAutoLoad}
+                  onStopLoad={handleStopLoad}
+                />
+              )}
+            </div>
+            {/* 右侧：分页器 */}
             <PaginationFooter
               current={currentPage}
               pageSize={10}
@@ -826,14 +865,6 @@ const DataTableDemo = () => {
               loadedCount={autoLoadData.length}
               cachedPages={cachedPages}
               onChange={setCurrentPage}
-            />
-            <AutoLoadControl
-              isLoading={isAutoLoading}
-              batchSize={batchSize}
-              onBatchSizeChange={setBatchSize}
-              onLoadNextPage={handleLoadNextPage}
-              onStartAutoLoad={handleStartAutoLoad}
-              onStopLoad={handleStopLoad}
             />
           </div>
         </div>
