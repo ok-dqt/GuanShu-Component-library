@@ -42,7 +42,7 @@ import { ProgressStatusPanel } from '../src/feedback/ProgressStatusPanel';
 // 导入业务组件
 import { DataTable } from '../src/business/DataTable';
 import type { DataTableColumn } from '../src/business/DataTable';
-import { Tag } from 'antd';
+import { Tag, Modal } from 'antd';
 
 // 导入 showcase 组件
 import { ResizablePreview } from './components/ResizablePreview';
@@ -205,23 +205,112 @@ const NavButtonDemo = () => (
   </div>
 );
 
-const ModalActionHeaderDemo = () => (
-  <ModalActionHeader
-    title="数据分析"
-    actions={[
-      { key: 'refresh', text: '刷新', onClick: () => alert('刷新') },
-      { key: 'export', text: '导出', onClick: () => alert('导出') },
-    ]}
-  />
-);
+// 弹窗表头组合 Demo - 支持切换两种表头样式
+const ModalHeaderDemo = () => {
+  const [open, setOpen] = React.useState(false);
+  const [headerType, setHeaderType] = React.useState<'action' | 'simple'>('action');
 
-const SimpleModalHeaderDemo = () => (
-  <SimpleModalHeader
-    title="弹窗标题"
-    onFeedback={() => alert('反馈')}
-    onUserCenter={() => alert('个人中心')}
-  />
-);
+  return (
+    <div className="space-y-4">
+      {/* 表头类型切换 */}
+      <div className="flex items-center gap-4">
+        <span className="text-sm text-gray-600">表头类型：</span>
+        <div className="flex p-0.5 bg-gray-100 rounded-lg">
+          <button
+            onClick={() => setHeaderType('action')}
+            className={`px-3 py-1 text-sm rounded-md transition-all ${
+              headerType === 'action'
+                ? 'bg-white text-gray-900 shadow-sm'
+                : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            ModalActionHeader
+          </button>
+          <button
+            onClick={() => setHeaderType('simple')}
+            className={`px-3 py-1 text-sm rounded-md transition-all ${
+              headerType === 'simple'
+                ? 'bg-white text-gray-900 shadow-sm'
+                : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            SimpleModalHeader
+          </button>
+        </div>
+        <button
+          onClick={() => setOpen(true)}
+          className="px-4 py-1.5 bg-accent-600 text-white text-sm rounded-md hover:bg-accent-700 transition-colors"
+        >
+          打开弹窗
+        </button>
+      </div>
+
+      {/* 表头预览 */}
+      <div className="border border-gray-200 rounded-lg overflow-hidden">
+        {headerType === 'action' ? (
+          <ModalActionHeader
+            title="数据分析"
+            actions={[
+              { key: 'refresh', text: '刷新', onClick: () => alert('刷新') },
+              { key: 'export', text: '导出', onClick: () => alert('导出') },
+            ]}
+          />
+        ) : (
+          <SimpleModalHeader
+            title="弹窗标题"
+            onFeedback={() => alert('反馈')}
+            onUserCenter={() => alert('个人中心')}
+          />
+        )}
+      </div>
+
+      {/* 弹窗 */}
+      <Modal
+        open={open}
+        onCancel={() => setOpen(false)}
+        width={800}
+        centered
+        footer={null}
+        closable={false}
+        styles={{
+          body: { padding: 0 },
+          content: { padding: 0 },
+        }}
+      >
+        {headerType === 'action' ? (
+          <ModalActionHeader
+            title="数据分析"
+            actions={[
+              { key: 'refresh', text: '刷新', onClick: () => alert('刷新') },
+              { key: 'export', text: '导出', onClick: () => alert('导出') },
+              { key: 'close', text: '关闭', onClick: () => setOpen(false) },
+            ]}
+          />
+        ) : (
+          <SimpleModalHeader
+            title="弹窗标题"
+            onFeedback={() => alert('反馈')}
+            onUserCenter={() => alert('个人中心')}
+            onClearCache={() => alert('清除缓存')}
+          />
+        )}
+        <div className="p-6">
+          <p className="text-gray-600 mb-4">
+            这是弹窗内容区域，当前使用的是{' '}
+            <code className="text-accent-600 bg-gray-100 px-1 py-0.5 rounded">
+              {headerType === 'action' ? 'ModalActionHeader' : 'SimpleModalHeader'}
+            </code>{' '}
+            组件作为表头。
+          </p>
+          <div className="bg-gray-50 rounded-lg p-4 text-sm text-gray-500">
+            <p>• ModalActionHeader：适用于需要多个操作按钮的场景</p>
+            <p>• SimpleModalHeader：适用于简洁展示，内置反馈/个人中心入口</p>
+          </div>
+        </div>
+      </Modal>
+    </div>
+  );
+};
 
 const CardGridDemo = () => (
   <CardGrid
@@ -1379,8 +1468,8 @@ const [value, setValue] = useState('basic');
     name: 'ModalActionHeader',
     cnName: '弹窗操作头部',
     category: ComponentCategory.LAYOUT,
-    description: '弹窗操作头部组件，支持自定义logo、标题和操作按钮。',
-    component: ModalActionHeaderDemo,
+    description: '弹窗操作头部组件，支持自定义logo、标题和操作按钮。可切换查看两种弹窗表头样式。',
+    component: ModalHeaderDemo,
     propsDefinition: [
       { name: 'title', description: '标题', type: 'string', default: '-' },
       { name: 'logo', description: 'Logo', type: 'string | ReactNode', default: '-' },
@@ -1429,8 +1518,8 @@ const [value, setValue] = useState('basic');
     name: 'SimpleModalHeader',
     cnName: '简洁弹窗头部',
     category: ComponentCategory.LAYOUT,
-    description: '简洁版弹窗头部组件。',
-    component: SimpleModalHeaderDemo,
+    description: '简洁版弹窗头部组件，内置反馈/个人中心入口。可切换查看两种弹窗表头样式。',
+    component: ModalHeaderDemo,
     propsDefinition: [
       { name: 'title', description: '标题', type: 'string', default: '-' },
       { name: 'logo', description: 'Logo', type: 'ReactNode', default: '-' },
