@@ -204,7 +204,7 @@ export const DataTable = <T extends object = any>({
     : null;
 
   const resize = useResize(resizeOptions ?? { defaultWidth: 0, defaultHeight: 0 });
-  const isResizeEnabled = resizable && resize.width > 0;
+  const isResizeEnabled = resizable && resize.isInitialized;
 
   // 递归转换列配置（支持多层级列头）
   const convertColumn = (col: DataTableColumn<T>): any => ({

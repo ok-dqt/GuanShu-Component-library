@@ -35,6 +35,8 @@ export interface UseResizeReturn {
   width: number;
   /** 当前高度（像素） */
   height: number;
+  /** 是否已初始化完成 */
+  isInitialized: boolean;
   /** 是否正在拖拽 */
   isResizing: boolean;
   /** 容器 ref */
@@ -64,6 +66,7 @@ export const useResize = (options: UseResizeOptions): UseResizeReturn => {
   } = options;
 
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   // 尺寸状态（初始宽度为 0，挂载后计算）
   const [size, setSize] = useState({
@@ -83,23 +86,35 @@ export const useResize = (options: UseResizeOptions): UseResizeReturn => {
 
   // 初始化宽度（处理百分比情况）
   useEffect(() => {
-    if (!containerRef.current) return;
-    if (size.width !== 0) return;
-
-    const parentWidth = containerRef.current.parentElement?.clientWidth || 800;
-    let initialWidth: number;
-
-    if (typeof defaultWidth === 'string' && defaultWidth.endsWith('%')) {
-      const percent = parseFloat(defaultWidth) / 100;
-      initialWidth = parentWidth * percent;
-    } else if (typeof defaultWidth === 'number') {
-      initialWidth = defaultWidth;
-    } else {
-      initialWidth = parentWidth;
+    if (isInitialized) return;
+    if (typeof defaultWidth === 'number') {
+      setSize((prev) => ({ ...prev, width: defaultWidth }));
+      setIsInitialized(true);
+      return;
     }
 
-    setSize((prev) => ({ ...prev, width: initialWidth }));
-  }, [defaultWidth, size.width]);
+    // 百分比宽度需要等 ref 挂载后计算
+    const calculateWidth = () => {
+      if (!containerRef.current) return;
+
+      const parentWidth = containerRef.current.parentElement?.clientWidth || 800;
+      let initialWidth: number;
+
+      if (typeof defaultWidth === 'string' && defaultWidth.endsWith('%')) {
+        const percent = parseFloat(defaultWidth) / 100;
+        initialWidth = parentWidth * percent;
+      } else {
+        initialWidth = parentWidth;
+      }
+
+      setSize((prev) => ({ ...prev, width: initialWidth }));
+      setIsInitialized(true);
+    };
+
+    // 使用 requestAnimationFrame 确保 DOM 已挂载
+    const rafId = requestAnimationFrame(calculateWidth);
+    return () => cancelAnimationFrame(rafId);
+  }, [defaultWidth, isInitialized]);
 
   // 开始拖拽宽度
   const handleWidthMouseDown = useCallback(
@@ -197,6 +212,7 @@ export const useResize = (options: UseResizeOptions): UseResizeReturn => {
   return {
     width: size.width,
     height: size.height,
+    isInitialized,
     isResizing: resizeState.isResizing,
     containerRef,
     widthHandleProps: { onMouseDown: handleWidthMouseDown },
